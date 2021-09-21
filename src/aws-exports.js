@@ -3,10 +3,10 @@
 
 const awsmobile = {
     "aws_project_region": "us-east-2",
-    "aws_cognito_identity_pool_id": "us-east-2:6c4f20cc-ed17-4144-a670-6a2a100a4556",
+    "aws_cognito_identity_pool_id": "us-east-2:dcbb0e25-ed03-423e-aec5-513f5ecda7c4",
     "aws_cognito_region": "us-east-2",
-    "aws_user_pools_id": "us-east-2_0x52dZJlJ",
-    "aws_user_pools_web_client_id": "9g7skpmd3e602s4qga8dku6md",
+    "aws_user_pools_id": "us-east-2_iBOnGkorn",
+    "aws_user_pools_web_client_id": "4bs15raoalrhq0dvd7q0vs1584",
     "oauth": {
         "domain": "wecanmeet-staging.auth.us-east-2.amazoncognito.com",
         "scope": [
@@ -16,8 +16,8 @@ const awsmobile = {
             "profile",
             "aws.cognito.signin.user.admin"
         ],
-        "redirectSignIn": "https://localhost:3000/profile",
-        "redirectSignOut": "https://localhost:3000/",
+        "redirectSignIn": "https://master.d2ykddkrx77uzr.amplifyapp.com/",
+        "redirectSignOut": "https://master.d2ykddkrx77uzr.amplifyapp.com/",
         "responseType": "code"
     },
     "federationTarget": "COGNITO_USER_POOLS",

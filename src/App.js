@@ -40,7 +40,9 @@ function App() {
             <ul id="drop_mainmenu" class="fm2_drop_mainmenu">
               <li id="menu-item-37" class="menu-item menu-item-type-custom menu-item-object-custom current-menu-item current_page_item menu-item-home menu-item-37"><a href="/" aria-current="page">Home</a></li>
               {user ? (
-              <li id="menu-item-235" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-235"><a href="/">Profile Page</a></li>
+                <><li id="menu-item-235" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-235"><a href="/">Profile Page</a></li>
+                <li id="menu-item-77" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-77"><a href="/" onclick="Auth.signOut()">Log Out</a></li>
+                </>
               ) : (
                 <><li id="menu-item-77" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-77"><a href="/signup">Join</a></li>
                 <li id="menu-item-150" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-150"><a href="/login">Log In</a></li>
