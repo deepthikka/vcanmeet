@@ -126,31 +126,10 @@ Parameters:
     Type: String
   
             
-  hostedUIDomainName:
-    Type: String
-  
-            
-        
-  authProvidersUserPool:
-    Type: CommaDelimitedList
-      
-  hostedUIProviderMeta:
-    Type: String
-  
-            
-  hostedUIProviderCreds:
-    Type: String
-  
-            
-  oAuthMetadata:
-    Type: String
-  
-            
         
   userPoolGroupList:
     Type: CommaDelimitedList
       
-            
   serviceName:
     Type: String
   
@@ -173,6 +152,31 @@ Parameters:
       
         
   dependsOn:
+    Type: CommaDelimitedList
+      
+  hostedUIDomainName:
+    Type: String
+  
+            
+        
+  authProvidersUserPool:
+    Type: CommaDelimitedList
+      
+  hostedUIProviderMeta:
+    Type: String
+  
+            
+  hostedUIProviderCreds:
+    Type: String
+  
+            
+  oAuthMetadata:
+    Type: String
+  
+            
+            
+        
+  authProviders:
     Type: CommaDelimitedList
       
 Conditions:

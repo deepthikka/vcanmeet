@@ -1,7 +1,5 @@
 import React from 'react';
 import { Auth } from 'aws-amplify';
-import App from '../App';
-
 
 export default class Login extends React.Component {
 

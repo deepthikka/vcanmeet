@@ -49,10 +49,6 @@
     "useDefault": "defaultSocial",
     "hostedUI": true,
     "triggers": "{}",
-    "hostedUIDomainName": "vcanmeetcafa40ca-cafa40ca",
-    "authProvidersUserPool": [],
-    "hostedUIProviderMeta": "[]",
-    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"https://master.d1nzulc4sg4n11.amplifyapp.com/\"],\"LogoutURLs\":[\"https://master.d1nzulc4sg4n11.amplifyapp.com/\"]}",
     "userPoolGroupList": [],
     "serviceName": "Cognito",
     "usernameCaseSensitive": false,
@@ -61,5 +57,12 @@
     },
     "breakCircularDependency": true,
     "permissions": [],
-    "dependsOn": []
+    "dependsOn": [],
+    "hostedUIDomainName": "vcanmeetf0d9a703-f0d9a703",
+    "authProvidersUserPool": [
+        "Facebook"
+    ],
+    "hostedUIProviderMeta": "[{\"ProviderName\":\"Facebook\",\"authorize_scopes\":\"email,public_profile\",\"AttributeMapping\":{\"email\":\"email\",\"username\":\"id\"}}]",
+    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"http://localhost:3000/\"],\"LogoutURLs\":[\"http://localhost:3000/\"]}",
+    "authProviders": []
 }
