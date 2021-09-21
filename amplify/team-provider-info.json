@@ -1,0 +1,20 @@
+{
+  "staging": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-amplify757a9a78dfe94-staging-100038-authRole",
+      "UnauthRoleArn": "arn:aws:iam::943954999559:role/amplify-amplify757a9a78dfe94-staging-100038-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::943954999559:role/amplify-amplify757a9a78dfe94-staging-100038-authRole",
+      "Region": "us-east-2",
+      "DeploymentBucketName": "amplify-amplify757a9a78dfe94-staging-100038-deployment",
+      "UnauthRoleName": "amplify-amplify757a9a78dfe94-staging-100038-unauthRole",
+      "StackName": "amplify-amplify757a9a78dfe94-staging-100038",
+      "StackId": "arn:aws:cloudformation:us-east-2:943954999559:stack/amplify-amplify757a9a78dfe94-staging-100038/c6029b80-1ac2-11ec-a297-06f82a102f6c",
+      "AmplifyAppId": "d2ykddkrx77uzr"
+    },
+    "categories": {
+      "auth": {
+        "vcanmeet": {}
+      }
+    }
+  }
+}

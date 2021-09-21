@@ -8,7 +8,6 @@ import {
 import './css/App.css';
 import './css/theme.css';
 
-
 import Home from './components/Home';
 import Login from './components/Login';
 import Signup from './components/Signup';
