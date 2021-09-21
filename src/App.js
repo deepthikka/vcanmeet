@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   BrowserRouter as Router,
   Switch,
@@ -7,12 +7,26 @@ import {
 } from "react-router-dom";
 import './css/App.css';
 import './css/theme.css';
+import { Auth } from 'aws-amplify';
 
 import Home from './components/Home';
 import Login from './components/Login';
 import Signup from './components/Signup';
 
 function App() {
+
+  const [user, setUser] = useState(null);
+  getUser().then(userData => setUser(userData));
+  
+  async function getUser() {
+    try {
+      const userData = await Auth.currentAuthenticatedUser();
+      return userData;
+    } catch (e) {
+      return console.log('Not signed in');
+    }
+  }
+
   return (
     <Router>
     <body class="home page-id-168 custom-background homepage-template">
@@ -25,9 +39,13 @@ function App() {
           <div id="drop_mainmenu_container" class="menu-menu-home-container">
             <ul id="drop_mainmenu" class="fm2_drop_mainmenu">
               <li id="menu-item-37" class="menu-item menu-item-type-custom menu-item-object-custom current-menu-item current_page_item menu-item-home menu-item-37"><a href="/" aria-current="page">Home</a></li>
-              <li id="menu-item-77" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-77"><a href="/signup">Join</a></li>
-              <li id="menu-item-150" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-150"><a href="/login">Log In</a></li>
+              {user ? (
               <li id="menu-item-235" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-235"><a href="/">Profile Page</a></li>
+              ) : (
+                <><li id="menu-item-77" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-77"><a href="/signup">Join</a></li>
+                <li id="menu-item-150" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-150"><a href="/login">Log In</a></li>
+                </>
+              )}
             </ul>
           </div>
         </div>
