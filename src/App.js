@@ -146,10 +146,11 @@ function App() {
       :
       <Route exact path="/login" component={Login} />
       }
-      {user ?
+      <Route exact path="/profile" component={Profile} />
+      {/* {user ?
       <Route exact path="/profile" component={Profile} />
       : <Redirect from="/profile" to="/login" />
-      }
+      } */}
     </Switch>
     </body>
     </Router>
