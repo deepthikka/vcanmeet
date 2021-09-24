@@ -26,7 +26,7 @@ export default class Login extends React.Component {
     // );
 
     const federated = {
-      googleClientId: '447743058882-k108ald8pnda9aiagai4drv1dhjgh1fc.apps.googleusercontent.com',
+      googleClientId: '431440944618-rq4ulhuvev3i1osgr6gdv49d3b0ahsjf.apps.googleusercontent.com',
       facebookAppId: '978675252693276',
   };
 
