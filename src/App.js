@@ -1,6 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import { Hub } from "aws-amplify";
+import { UserContext } from "./components/UserContext";
+
 import {
+  Redirect,
+  useHistory,
   BrowserRouter as Router,
   Switch,
   Route
@@ -8,50 +12,84 @@ import {
 import './css/App.css';
 import './css/theme.css';
 import { Auth } from 'aws-amplify';
+import {NotificationManager, NotificationContainer} from 'react-notifications';
 
 import Home from './components/Home';
 import Login from './components/Login';
 import Signup from './components/Signup';
 import Profile from './components/Profile';
 
+import 'react-notifications/lib/notifications.css';
+
 function App() {
 
-  const [user, setUser] = useState(null);
+  const history = useHistory();
 
+  const [user, setUser ] = useState(null);
+
+  function getUser() {
+   try {
+        Auth.currentAuthenticatedUser()
+        .then((response) => {
+          setUser(response);
+        })
+        .catch(err => {
+          setUser(null);
+        });
+    } catch(e) {
+      return null;
+    }
+  }
+  
   useEffect(() => {
     Hub.listen('auth', ({ payload: { event, data } }) => {
+      alert(event);
       switch (event) {
         case 'signIn':
           getUser().then(userData => setUser(userData));
+          NotificationManager.success('Succesfully Logged in!', 'Successful!', 2000);
+          history.push('/profile');
           break;
+          case 'signUp':
+            getUser().then(userData => setUser(userData));
+            NotificationManager.success('Succesfully Signed up!', 'Successful!', 2000);
+            history.push('/login');
+            break;
+          case 'signOut':
         case 'oAuthSignOut':
           setUser(null);
+          history.push('/profile');
           break;
+        case 'signUp_failure':
+          NotificationManager.Error('Signup Failed! Enter valid username and password', 'Error!');
+          setUser(null);
         case 'signIn_failure':
         case 'cognitoHostedUI_failure':
-          console.log('Sign in failure', data);
+          NotificationManager.Error('Login Failed! Enter valid username and password', 'Error!');
           setUser(null);
           break;
         default:
-          //console.log('Unknown event : ', event);
           break;
 
       }
     });
   }, []);
 
-  function getUser() {
-    return Auth.currentAuthenticatedUser()
-      .then(userData => userData)
-      .catch(() => console.log('Not signed in'));
-  }
+
 
   async function logout() {
-    console.log("Logging out")
-    Auth.signOut();
+    Auth.signOut()
+      .then(() => {
+        NotificationManager.success('Succesfully Logged out!', 'Successful!', 2000);
+      })
+      .catch(err => {
+        NotificationManager.error('Error : ' + err, 'Error!');
+      }
+    )
   }
 
   return (
+    <UserContext.Provider value={user}>
     <Router>
     <body className="home page-id-168 custom-background homepage-template">
     <div className="header-top homepage"  data-sticky='0'  data-sticky-mobile='1'  data-sticky-to='top' >
@@ -98,15 +136,24 @@ function App() {
           </svg>
         </div>
       </div>
+      <NotificationContainer/>
     </div>
     <Switch>
       <Route exact path="/" component={Home}/>
-      <Route exact path="/login" component={Login} />
       <Route exact path="/signup" component={Signup} />
+      {user ?
+      <Redirect from="/login" to="/profile" />
+      :
+      <Route exact path="/login" component={Login} />
+      }
+      {user ?
       <Route exact path="/profile" component={Profile} />
+      : <Redirect from="/profile" to="/login" />
+      }
     </Switch>
     </body>
     </Router>
+    </UserContext.Provider>
   );
 }
 
