@@ -1,6 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
 import { Hub } from "aws-amplify";
-import { UserContext } from "./components/UserContext";
 
 import {
   Redirect,
@@ -25,48 +24,52 @@ function App() {
 
   const history = useHistory();
 
-  const [user, setUser ] = useState(null);
-
   function getUser() {
    try {
         Auth.currentAuthenticatedUser()
         .then((response) => {
-          setUser(response);
+          localStorage.setItem('user', response);
+          // alert(JSON.stringify(response))
+          return response;
         })
         .catch(err => {
-          setUser(null);
+          localStorage.setItem('user', '');
+          return null;
         });
     } catch(e) {
+      localStorage.setItem('user', '');
       return null;
     }
+  }
+
+  function refreshPage() {
+    window.location.reload(false);
   }
   
   useEffect(() => {
     Hub.listen('auth', ({ payload: { event, data } }) => {
-      alert(event);
+      //alert(event);
       switch (event) {
         case 'signIn':
-          getUser().then(userData => setUser(userData));
+          getUser();
           NotificationManager.success('Succesfully Logged in!', 'Successful!', 2000);
-          history.push('/profile');
+          refreshPage();
           break;
           case 'signUp':
-            getUser().then(userData => setUser(userData));
             NotificationManager.success('Succesfully Signed up!', 'Successful!', 2000);
-            history.push('/login');
+            // history.push('/login');
             break;
-          case 'signOut':
+        case 'signOut':
         case 'oAuthSignOut':
-          setUser(null);
-          history.push('/profile');
+          getUser();
+          // refreshPage();
           break;
         case 'signUp_failure':
           NotificationManager.Error('Signup Failed! Enter valid username and password', 'Error!');
-          setUser(null);
         case 'signIn_failure':
         case 'cognitoHostedUI_failure':
           NotificationManager.Error('Login Failed! Enter valid username and password', 'Error!');
-          setUser(null);
+          //refreshPage();
           break;
         default:
           break;
@@ -89,9 +92,8 @@ function App() {
   }
 
   return (
-    <UserContext.Provider value={user}>
     <Router>
-    <body className="home page-id-168 custom-background homepage-template" >
+    <body className="home page-id-168 custom-background homepage-template">
     <div className="header-top homepage"  data-sticky='0'  data-sticky-mobile='1'  data-sticky-to='top' >
       <div className="navigation-wrapper ope-front-page">
         <div className="logo_col">
@@ -99,9 +101,17 @@ function App() {
         </div>
         <div className="main_menu_col">
           <div id="drop_mainmenu_container" className="menu-menu-home-container">
-            <ul id="drop_mainmenu" className="fm2_drop_mainmenu">
+            <ul id="drop_mainmenu" className="fm2_drop_mainmenu" >
+              <li id="menu-item-37" className="menu-item menu-item-type-custom menu-item-object-custom current-menu-item current_page_item menu-item-home menu-item-37">
+              <div class="searchBar">
+                <input id="searchQueryInput" type="text" name="searchQueryInput" placeholder="Find an Event" value="" />
+                <button id="searchQuerySubmit" type="submit" name="searchQuerySubmit">
+                <svg className="svgstyle" viewBox="0 0 24 24"><path fill="#666666" d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z" /></svg>
+                </button>
+              </div>
+              </li>
               <li id="menu-item-37" className="menu-item menu-item-type-custom menu-item-object-custom current-menu-item current_page_item menu-item-home menu-item-37"><a href="/" aria-current="page">Home</a></li>
-              {user ? (
+              {localStorage.getItem('user') ? (
                 <><li id="menu-item-235" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-235"><a href="/profile">Profile</a></li>
                 <li id="menu-item-77" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-77"><a href="#" onClick={e => logout()}>Log Out</a></li>
                 </>
@@ -141,20 +151,18 @@ function App() {
     <Switch>
       <Route exact path="/" component={Home}/>
       <Route exact path="/signup" component={Signup} />
-      {user ?
+      {localStorage.getItem('user') ?
       <Redirect from="/login" to="/profile" />
       :
       <Route exact path="/login" component={Login} />
       }
-      <Route exact path="/profile" component={Profile} />
-      {/* {user ?
+      {localStorage.getItem('user') ?
       <Route exact path="/profile" component={Profile} />
       : <Redirect from="/profile" to="/login" />
-      } */}
+      }
     </Switch>
     </body>
     </Router>
-    </UserContext.Provider>
   );
 }
 
