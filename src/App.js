@@ -91,7 +91,7 @@ function App() {
   return (
     <UserContext.Provider value={user}>
     <Router>
-    <body className="home page-id-168 custom-background homepage-template">
+    <body className="home page-id-168 custom-background homepage-template" onLoad={getUser()}>
     <div className="header-top homepage"  data-sticky='0'  data-sticky-mobile='1'  data-sticky-to='top' >
       <div className="navigation-wrapper ope-front-page">
         <div className="logo_col">
