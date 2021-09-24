@@ -91,7 +91,7 @@ function App() {
   return (
     <UserContext.Provider value={user}>
     <Router>
-    <body className="home page-id-168 custom-background homepage-template" onLoad={getUser()}>
+    <body className="home page-id-168 custom-background homepage-template" >
     <div className="header-top homepage"  data-sticky='0'  data-sticky-mobile='1'  data-sticky-to='top' >
       <div className="navigation-wrapper ope-front-page">
         <div className="logo_col">
@@ -102,7 +102,7 @@ function App() {
             <ul id="drop_mainmenu" className="fm2_drop_mainmenu">
               <li id="menu-item-37" className="menu-item menu-item-type-custom menu-item-object-custom current-menu-item current_page_item menu-item-home menu-item-37"><a href="/" aria-current="page">Home</a></li>
               {user ? (
-                <><li id="menu-item-235" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-235"><a href="/profile">Welcome {user.username}</a></li>
+                <><li id="menu-item-235" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-235"><a href="/profile">Profile</a></li>
                 <li id="menu-item-77" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-77"><a href="#" onClick={e => logout()}>Log Out</a></li>
                 </>
               ) : (
