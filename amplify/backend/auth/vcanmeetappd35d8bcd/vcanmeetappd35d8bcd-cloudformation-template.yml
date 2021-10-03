@@ -170,10 +170,6 @@ Parameters:
   dependsOn:
     Type: CommaDelimitedList
       
-  hostedUIProviderCreds:
-    Type: String
-  
-            
   
   userPoolGroups:
     Type: String
@@ -181,7 +177,6 @@ Parameters:
   
   adminQueries:
     Type: String
-            
             
   
   thirdPartyAuth:
@@ -191,6 +186,10 @@ Parameters:
   authProviders:
     Type: CommaDelimitedList
       
+  hostedUIProviderCreds:
+    Type: String
+  
+            
 Conditions:
   ShouldNotCreateEnvResources: !Equals [ !Ref env, NONE ]
   

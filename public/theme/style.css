@@ -426,7 +426,7 @@ ol ol {
 
 body img {
   max-width: 100%;
-  height: auto;
+  /* height: auto; */
 }
 
 /* =Forms
@@ -1239,6 +1239,18 @@ h3.heading10 {
   margin-top: 10px;
 }
 
+.row_345 .button.small.green {
+  margin-top: 10px;
+}
+
+.row_345 .button.small.yellow {
+  margin-top: 10px;
+}
+
+.row_345 .button.small.purple {
+  margin-top: 10px;
+}
+
 .post-content-single {
   clear: both;
   min-height: 100px;
@@ -1400,7 +1412,9 @@ h2.footer-logo {
 
 .blog-title {
   margin-top: 15px;
-  font-weight: 400;
+  font-size: x-large;
+  font-weight: 200;
+  font-family: sans-serif;
 }
 
 .blog-title a {

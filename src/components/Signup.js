@@ -7,34 +7,46 @@ export default class Signup extends React.Component {
 
   render(){
 
-    const OtherMethods = props => (
-      <div id="alternativeLogin">
-        <label>Sign up with:</label>
-        <div id="iconGroup">
-          <Facebook />
-          <Google />
-        </div>
-      </div>
-    );
-
-    const Facebook = props => (
-      <a href="#" id="facebookIcon" onClick={() => Auth.federatedSignIn({ provider: "Facebook" })} ></a>
-    );
-    
-    const Google = props => (
-      <a href="#" id="googleIcon" onClick={() => Auth.federatedSignIn({ provider: "Google" })} ></a>
-    );
-
     return(
       <div id="signupform">
-        <OtherMethods />
-          <AmplifySignUp headerText="or Signup for an Account" slot="sign-up"
+          <AmplifySignUp headerText="Signup for an Account" slot="sign-up"
           formFields={[
-            { type: "username" },
             {
-              type: "password",
+              type: "custom:usertype",
+              label: "User type",
+              key: "custom:usertype",
+              placeholder: "Enter Influencer or Follower",
+              required: true,
             },
-            { type: "email" }
+            { type: "name",
+              label: "Name",
+              key: "name",
+              placeholder: "Enter Full name",
+              required: true,
+            },
+            { type: "username" },
+            { type: "password"},
+            { type: "email" },
+            { type: "picture",
+              label: "Picture",
+              key: "picture",
+              placeholder: "Upload your picture",
+              required: true,
+            },
+            {
+              type: "custom:instagramurl",
+              label: "Instagram Handle",
+              key: "custom:instagramurl",
+              placeholder: "Instagram Handle URL",
+              required: false,
+            },
+            {
+              type: "custom:youtubeurl",
+              label: "Youtube Handle",
+              key: "custom:youtubeurl",
+              placeholder: "Youtube Handle URL",
+              required: false,
+            }
           ]} 
           >
           </AmplifySignUp>

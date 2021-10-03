@@ -37,6 +37,20 @@ const awsmobile = {
     },
     "aws_cognito_verification_mechanisms": [
         "EMAIL"
+    ],
+    "aws_dynamodb_all_tables_region": "us-east-2",
+    "aws_dynamodb_table_schemas": [
+        {
+            "tableName": "Master-Category",
+            "region": "us-east-2"
+        }
+    ],
+    "aws_cloud_logic_custom": [
+        {
+            "name": "category",
+            "endpoint": "https://z59bi5ofa1.execute-api.us-east-2.amazonaws.com/staging",
+            "region": "us-east-2"
+        }
     ]
 };
 
