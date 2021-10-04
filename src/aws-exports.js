@@ -3,10 +3,10 @@
 
 const awsmobile = {
     "aws_project_region": "us-east-2",
-    "aws_cognito_identity_pool_id": "us-east-2:5df865fe-6d40-4161-8b70-91f26ff1b50d",
+    "aws_cognito_identity_pool_id": "us-east-2:c4b08300-12b9-4e3b-96b9-94b3b10e4641",
     "aws_cognito_region": "us-east-2",
-    "aws_user_pools_id": "us-east-2_R49bqmSJv",
-    "aws_user_pools_web_client_id": "4it24r3g1vsrd0fmpqu2mekiqi",
+    "aws_user_pools_id": "us-east-2_dEMqBcRSt",
+    "aws_user_pools_web_client_id": "2t4jbspmlu2b8vk9a8mm4si0mq",
     "oauth": {
         "domain": "vcanmeetapp-staging.auth.us-east-2.amazoncognito.com",
         "scope": [
@@ -16,16 +16,14 @@ const awsmobile = {
             "profile",
             "aws.cognito.signin.user.admin"
         ],
-        "redirectSignIn": "http://localhost:3000/profile/",
-        "redirectSignOut": "http://localhost:3000/",
+        "redirectSignIn": "https://master.d1rhcyp7mc8dsg.amplifyapp.com/profile/",
+        "redirectSignOut": "https://master.d1rhcyp7mc8dsg.amplifyapp.com/",
         "responseType": "code"
     },
     "federationTarget": "COGNITO_USER_POOLS",
     "aws_cognito_login_mechanisms": [],
     "aws_cognito_signup_attributes": [
-        "EMAIL",
-        "NAME",
-        "PICTURE"
+        "EMAIL"
     ],
     "aws_cognito_mfa_configuration": "OFF",
     "aws_cognito_mfa_types": [

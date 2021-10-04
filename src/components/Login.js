@@ -1,4 +1,5 @@
 /* global gapi */
+/* global FB */
 import React from "react";
 import { Auth } from 'aws-amplify';
 import {NotificationManager} from 'react-notifications';
@@ -24,8 +25,11 @@ export default class Login extends React.Component {
     });  
   }
 
-  onFBLogIn(googleUser) {
-    // alert("Logged In")
+  onFBLogIn(fbUser) {
+    // alert("Logged In as " + fbUser)
+    // FB.login(function (response) {
+    //   alert(response)
+    // });
   }
 
   onGoogleLogIn(googleUser) {
@@ -36,6 +40,7 @@ export default class Login extends React.Component {
     user.fname = googleUser.getBasicProfile().getFamilyName();
     user.email = googleUser.getBasicProfile().getEmail();
     user.image = googleUser.getBasicProfile().getImageUrl();
+    user.profile = null;
 
     localStorage.setItem('user', JSON.stringify(user));
     NotificationManager.success('Welcome ' + user.name, 'Successful!', 10000);
@@ -52,7 +57,7 @@ export default class Login extends React.Component {
       <div id="alternativeLogin">
         <label>Log In with:</label>
         <div id="iconGroup">
-          <Facebook />     
+          {/* <Facebook />      */}
         </div>
         <div id="iconGroup">
           <Google />
@@ -61,18 +66,10 @@ export default class Login extends React.Component {
       </div>
     );
     
-    // const Facebook = props => (
-    //   <a href="#" id="facebookIcon" onClick={() => Auth.federatedSignIn({ provider: "Facebook" })} ></a>
-    // );
-    
-    // const Google = props => (
-    //   <a href="#" id="googleIcon" onClick={() => Auth.federatedSignIn({ provider: "Google" })} ></a>
-    // );
-
     const Facebook = props => (
-      <div class="fb-login-button" data-width="250" data-size="large" 
-        data-button-type="" data-layout="default" data-auto-logout-link="false" 
-        data-use-continue-as="false" data-onlogin={this.onFBLogIn()}
+      <div className="fb-login-button" data-width="250" data-size="large" 
+        data-button-type="login_with" data-layout="default" data-auto-logout-link="false" 
+        data-use-continue-as="false" onClick={this.onFBLogIn()}
         data-scope="public_profile,email"></div>
     );
 
@@ -81,15 +78,10 @@ export default class Login extends React.Component {
       <div id="g-signin2" />
     );
 
-  //   const federated = {
-  //     googleClientId: '431440944618-rq4ulhuvev3i1osgr6gdv49d3b0ahsjf.apps.googleusercontent.com',
-  //     facebookAppId: '978675252693276',
-  // };
-
     return(
       <div id="loginform">
         <OtherMethods />
-        <AmplifyAuthenticator>
+        <AmplifyAuthenticator usernameAlias="email">
           <AmplifySignIn headerText="Login with your Account" slot="sign-in"
             hideSignUp
             // federated={federated}

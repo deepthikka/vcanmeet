@@ -114,10 +114,10 @@ export default class Home extends React.Component {
         <div className="page-content"> 
           <div id="latest-posts" style={{backgroundColor: "#ffffff"}} data-label="Latest posts" data-id="blog-section" data-events="latest_news" className="blog-section"> 
             <div className="gridContainer block1"> 
-              <div class="profileblock">
+              <div className="profileblock">
                 <img className="center" width="150" height="150" src={this.state.user.image} />
               </div>
-              <div class="nameblock">
+              <div className="nameblock">
                 <h3 className="fontstyle">{this.state.user.name}</h3>  
                 <h4 className="fontstyle">15 subscribers</h4>  
               </div>
@@ -125,14 +125,14 @@ export default class Home extends React.Component {
 
 
           <div className="gridContainer"> 
-            <hr class="wp-block-separator is-style-wide"/>
+            <hr className="wp-block-separator is-style-wide"/>
             <div className="blog-postsrow dark-text" data-type="row" data-dynamic-columns="one_page_express_latest_news_columns" data-content-shortcode="one_page_express_latest_news">            
               <div id="post-117" className="blog-postcol cp3cols">
                 <div className="post-content">
                   <div className="row_345">
                     <img width="100" height="100" style={{borderRadius: "50%"}} src="/images/profile.png" />
                     <a className="button blue small">
-                      <span data-theme="one_page_express_latest_news_read_more">Edit Profile</span>
+                      <span data-theme="one_page_express_latest_news_read_more" href="/updateProfile">Edit Profile</span>
                     </a>
                   </div>
                 </div>
@@ -168,7 +168,7 @@ export default class Home extends React.Component {
                 </div>
               </div>  
               
-              <hr class="wp-block-separator is-style-wide"/>
+              <hr className="wp-block-separator is-style-wide"/>
               <h4>Description</h4>
               <p>Ridges n Roads is my Travel Vlog. In my Travel Journey I will discuss the places visited, cuisines tried and the culture experienced. In my Vlog, I have covered #Sydney weekends, Kerala Tourism, Dubai.</p>
               <h4>YouTube Link</h4>

@@ -12,9 +12,6 @@
       "AmplifyAppId": "d1rhcyp7mc8dsg"
     },
     "categories": {
-      "auth": {
-        "vcanmeetappd35d8bcd": {}
-      },
       "storage": {
         "MasterCategory": {
           "tableName": "Master-Category",
@@ -30,6 +27,9 @@
           "deploymentBucketName": "amplify-amplify9befba8829824-staging-201151-deployment",
           "s3Key": "amplify-builds/categoryFunction-70333975303735514541-build.zip"
         }
+      },
+      "auth": {
+        "vcanmeetapp4cb73148": {}
       }
     }
   }

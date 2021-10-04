@@ -1,6 +1,6 @@
 {
   "auth": {
-    "vcanmeetappd35d8bcd": {
+    "vcanmeetapp4cb73148": {
       "service": "Cognito",
       "providerPlugin": "awscloudformation",
       "dependsOn": [],
@@ -8,9 +8,7 @@
       "frontendAuthConfig": {
         "loginMechanisms": [],
         "signupAttributes": [
-          "EMAIL",
-          "NAME",
-          "PICTURE"
+          "EMAIL"
         ],
         "passwordProtectionSettings": {
           "passwordPolicyMinLength": 8,

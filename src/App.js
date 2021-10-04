@@ -17,6 +17,7 @@ import Home from './components/Home';
 import Login from './components/Login';
 import Signup from './components/Signup';
 import Profile from './components/Profile';
+import UpdateProfile from './components/UpdateProfile';
 
 import 'react-notifications/lib/notifications.css';
 
@@ -26,15 +27,21 @@ function App() {
 
   function getUser() {
    try {
-        Auth.currentAuthenticatedUser()
-        .then((response) => {
-          alert(response)
-          alert(JSON.stringify(response))
-          localStorage.setItem('user', response);
-          // alert(JSON.stringify(response))
-          // alert(response.username)
-          // alert("response : " + response.getBasicProfile().getName());
-          return response;
+        Auth.currentUserInfo()
+        .then((res) => {
+          let user = {};
+          user.id = res.username;
+          user.name = res.attributes.name;
+          user.email = res.attributes.email;
+          user.image = res.attributes.picture;
+          user.profile = null;
+          //alert(JSON.stringify(user))
+      
+          localStorage.setItem('user', JSON.stringify(user));
+          NotificationManager.success('Welcome ' + user.name, 'Successful!', 10000);
+          window.location.reload(false);
+          refreshPage();
+          return res;
         })
         .catch(err => {
           localStorage.setItem('user', '');
@@ -52,27 +59,27 @@ function App() {
   
   useEffect(() => {
     Hub.listen('auth', ({ payload: { event, data } }) => {
-      //alert(event);
+      alert(event);
       switch (event) {
         case 'signIn':
           getUser();
-          NotificationManager.success('Succesfully Logged in!', 'Successful!', 2000);
-          refreshPage();
           break;
-          case 'signUp':
+        case 'signUp':
             NotificationManager.success('Succesfully Signed up!', 'Successful!', 2000);
+            <Redirect from="/signup" to="/login" />
             // history.push('/login');
             break;
         case 'signOut':
         case 'oAuthSignOut':
-          getUser();
+          localStorage.setItem('user', '');
           refreshPage();
           break;
         case 'signUp_failure':
-          NotificationManager.Error('Signup Failed! Enter valid username and password', 'Error!');
+          NotificationManager.error('Signup Failed! ' + data.message, 'Error!');
+          break;
         case 'signIn_failure':
         case 'cognitoHostedUI_failure':
-          NotificationManager.Error('Login Failed! Enter valid username and password', 'Error!');
+          NotificationManager.error('Login Failed! ' + data.message, 'Error!');
           //refreshPage();
           break;
         default:
@@ -160,9 +167,16 @@ function App() {
       :
       <Route exact path="/login" component={Login} />
       }
+      {(localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')).profile) ?
+      <Route exact path="/profile" component={Profile} />
+      : <Redirect from="/profile" to="/updateProfile" />
+      }
       {localStorage.getItem('user') ?
       <Route exact path="/profile" component={Profile} />
       : <Redirect from="/profile" to="/login" />
+      }      {localStorage.getItem('user') ?
+      <Route exact path="/updateProfile" component={UpdateProfile} />
+      : <Redirect from="/updateProfile" to="/login" />
       }
     </Switch>
     </body>
