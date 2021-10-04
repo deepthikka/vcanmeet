@@ -7,7 +7,7 @@ export default class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: {name: "", image: ""},
+      user: {name: "", image: "", youtubeLink: ""},
       events: [
         {
           img : "/images/horoscope.png",
@@ -29,18 +29,18 @@ export default class Home extends React.Component {
         },
       ],
       videos: [
-        {
-          url:"https://www.youtube.com/embed/UWY1OnCXPB0"
-        },
-        {
-          url:"https://www.youtube.com/embed/UWY1OnCXPB0"
-        },
-        {
-          url:"https://www.youtube.com/embed/UWY1OnCXPB0"
-        },
-        {
-          url:"https://www.youtube.com/embed/UWY1OnCXPB0"
-        },
+        // {
+        //   url:"https://www.youtube.com/embed/UWY1OnCXPB0"
+        // },
+        // {
+        //   url:"https://www.youtube.com/embed/UWY1OnCXPB0"
+        // },
+        // {
+        //   url:"https://www.youtube.com/embed/UWY1OnCXPB0"
+        // },
+        // {
+        //   url:"https://www.youtube.com/embed/UWY1OnCXPB0"
+        // },
 
       ]
     }
@@ -51,6 +51,20 @@ export default class Home extends React.Component {
     this.setState({
       user: user
     })
+    if(user.profile.youtubeChannelID) {
+      // alert("Youtube handle is " + user.profile.youtubeHandle)
+      
+      const currentChannelId = user.profile.youtubeChannelID;
+      const apikey = "AIzaSyB74HifExjAeP3uojTJzp-fJU2IVwu0fR8";
+
+      //var finalUrl = `https://www.googleapis.com/youtube/v3/search?key=${apikey}&channelId=${currentChannelId}&part=snippet,id&order=date&maxResults=4`;
+      const finalUrl = "https://www.googleapis.com/youtube/v3/search?key=AIzaSyB74HifExjAeP3uojTJzp-fJU2IVwu0fR8&channelId=UCXgGY0wkgOzynnHvSEVmE3A&part=snippet,id&order=date&maxResults=4";
+      const data = await fetch(finalUrl).then(response => response.json());
+      // alert(JSON.stringify(data))
+      this.setState({
+        videos: data.items
+      })
+    }
   }
   
 
@@ -100,10 +114,11 @@ export default class Home extends React.Component {
       );
 
     var videoElements = [];
-    if(this.state.videos) {
+    if(this.state.videos && this.state.videos.length > 0) {
       for(var i=0; i<this.state.videos.length; i++) {
+        var url = 'https://www.youtube.com/embed/' + this.state.videos[i].id.videoId;
         videoElements.push (
-          <VideoLink url={this.state.videos[i].url}/>
+          <VideoLink url={url}/>
         );
       }
     }
@@ -171,12 +186,18 @@ export default class Home extends React.Component {
               <hr className="wp-block-separator is-style-wide"/>
               <h4>Description</h4>
               <p>Ridges n Roads is my Travel Vlog. In my Travel Journey I will discuss the places visited, cuisines tried and the culture experienced. In my Vlog, I have covered #Sydney weekends, Kerala Tourism, Dubai.</p>
-              <h4>YouTube Link</h4>
-              <p><a href="https://www.youtube.com/channel/UC4hpLJdRUQLh6e79XRT_L0g">https://www.youtube.com/channel/UC4hpLJdRUQLh6e79XRT_L0g</a></p>
-
-              <div className="blog-postsrow" data-type="row">            
-                {videoElements}
-              </div> 
+              {this.state.user.profile && this.state.user.profile.youtubeChannelID ? (
+                <>
+                <h4>YouTube Link</h4>
+                <p><a href={'https://www.youtube.com/channel/'+ this.state.user.profile.youtubeChannelID}>https://www.youtube.com/channel/{this.state.user.profile.youtubeChannelID}</a>
+                </p>
+                <div className="blog-postsrow" data-type="row">
+                  {videoElements}
+                </div>
+                </>
+              ) : 
+              <h4></h4>
+              } 
             </div> 
           </div>
         

@@ -40,7 +40,9 @@ export default class Login extends React.Component {
     user.fname = googleUser.getBasicProfile().getFamilyName();
     user.email = googleUser.getBasicProfile().getEmail();
     user.image = googleUser.getBasicProfile().getImageUrl();
-    user.profile = null;
+    user.profile = {
+          "youtubeChannelID":"UCXgGY0wkgOzynnHvSEVmE3A"
+    }
 
     localStorage.setItem('user', JSON.stringify(user));
     NotificationManager.success('Welcome ' + user.name, 'Successful!', 10000);

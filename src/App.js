@@ -34,7 +34,10 @@ function App() {
           user.name = res.attributes.name;
           user.email = res.attributes.email;
           user.image = res.attributes.picture;
-          user.profile = null;
+          user.profile = {
+            "youtubeChannelID":"UCXgGY0wkgOzynnHvSEVmE3A",
+            "youtubeLink":"https://www.youtube.com/channel/UCXgGY0wkgOzynnHvSEVmE3A"
+          }
           //alert(JSON.stringify(user))
       
           localStorage.setItem('user', JSON.stringify(user));
