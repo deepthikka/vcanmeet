@@ -183,6 +183,14 @@ function App() {
       }
     </Switch>
     </body>
+    <div class="footer">
+      <div class="gridContainer">
+        <div class="row">
+          <p class="footer-copyright">
+            &copy;&nbsp;&nbsp;2021&nbsp;VcanMeet.&nbsp;Contact : admin@megamtech.com</p>
+        </div>
+      </div>
+    </div>
     </Router>
   );
 }

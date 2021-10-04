@@ -57,13 +57,12 @@ export default class Login extends React.Component {
 
     const OtherMethods = props => (
       <div id="alternativeLogin">
-        <label>Log In with:</label>
+        {/* <label>Log In with:</label> */}
         <div id="iconGroup">
           {/* <Facebook />      */}
         </div>
         <div id="iconGroup">
           <Google />
-          
         </div>
       </div>
     );
@@ -84,7 +83,7 @@ export default class Login extends React.Component {
       <div id="loginform">
         <OtherMethods />
         <AmplifyAuthenticator usernameAlias="email">
-          <AmplifySignIn headerText="Login with your Account" slot="sign-in"
+          <AmplifySignIn headerText="Or Login with a Custom Account" slot="sign-in"
             hideSignUp
             // federated={federated}
           >

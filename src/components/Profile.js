@@ -52,15 +52,12 @@ export default class Home extends React.Component {
       user: user
     })
     if(user.profile.youtubeChannelID) {
-      // alert("Youtube handle is " + user.profile.youtubeHandle)
       
       const currentChannelId = user.profile.youtubeChannelID;
       const apikey = "AIzaSyB74HifExjAeP3uojTJzp-fJU2IVwu0fR8";
 
-      //var finalUrl = `https://www.googleapis.com/youtube/v3/search?key=${apikey}&channelId=${currentChannelId}&part=snippet,id&order=date&maxResults=4`;
-      const finalUrl = "https://www.googleapis.com/youtube/v3/search?key=AIzaSyB74HifExjAeP3uojTJzp-fJU2IVwu0fR8&channelId=UCXgGY0wkgOzynnHvSEVmE3A&part=snippet,id&order=date&maxResults=4";
+      var finalUrl = 'https://www.googleapis.com/youtube/v3/search?key=' + apikey + '&channelId='+ currentChannelId+ '&part=snippet,id&order=date&maxResults=4';
       const data = await fetch(finalUrl).then(response => response.json());
-      // alert(JSON.stringify(data))
       this.setState({
         videos: data.items
       })
@@ -69,7 +66,6 @@ export default class Home extends React.Component {
   
 
   render(){
-
     const Event = props => (
     <div id="post-117" className="blog-postcol cp4cols">
       <div className="post-content">
@@ -145,9 +141,9 @@ export default class Home extends React.Component {
               <div id="post-117" className="blog-postcol cp3cols">
                 <div className="post-content">
                   <div className="row_345">
-                    <img width="100" height="100" style={{borderRadius: "50%"}} src="/images/profile.png" />
-                    <a className="button blue small">
-                      <span data-theme="one_page_express_latest_news_read_more" href="/updateProfile">Edit Profile</span>
+                  <img style={{width: 100, height: 100, borderRadius: "50%"}} src="/images/profile.png" />
+                    <a className="button blue small" href="/updateProfile">
+                      <span data-theme="one_page_express_latest_news_read_more">Edit Profile</span>
                     </a>
                   </div>
                 </div>
@@ -155,27 +151,27 @@ export default class Home extends React.Component {
               <div className="blog-postcol cp3cols">
                 <div className="post-content">
                   <div className="row_345">
-                    <img width="100" height="100" style={{borderRadius: "50%"}} src="/images/event.png" />
+                    <img style={{width: 100, height: 100, borderRadius: "50%"}} src="/images/event.png" />
                     <a className="button green small">
                       <span data-theme="one_page_express_latest_news_read_more">Create Event</span>
                     </a>
                   </div>
                 </div>
               </div>      
-              <div id="post-117" className="blog-postcol cp3cols">
+              <div className="blog-postcol cp3cols">
                 <div className="post-content">
                   <div className="row_345">
-                    <img width="100" height="100" style={{borderRadius: "50%"}} src="/images/review.jpg" />
+                    <img style={{width: 100, height: 100, borderRadius: "50%"}} src="/images/review.jpg" />
                     <a className="button yellow small">
                       <span data-theme="one_page_express_latest_news_read_more">View Reviews</span>
                     </a>
                   </div>
                 </div>
               </div>      
-              <div id="post-117" className="blog-postcol cp3cols">
+              <div className="blog-postcol cp3cols">
                 <div className="post-content">
                   <div className="row_345">
-                    <img width="100" height="100" style={{borderRadius: "50%"}} src="/images/security.png" />
+                  <img style={{width: 100, height: 100, borderRadius: "50%"}} src="/images/security.png" />
                     <a className="button purple small">
                       <span data-theme="one_page_express_latest_news_read_more">Security Setup</span>
                     </a>
