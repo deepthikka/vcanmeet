@@ -1,7 +1,7 @@
 import React from "react";
-import { Auth } from 'aws-amplify';
 import {AmplifySignUp} from "@aws-amplify/ui-react";
 import './../css/Login.css';
+import { API } from 'aws-amplify';
 
 export default class Signup extends React.Component {
 
@@ -10,6 +10,7 @@ export default class Signup extends React.Component {
     return(
       <div id="signupform">
           <AmplifySignUp headerText="Signup for an Account" slot="sign-up"
+          hideSignIn
           formFields={[
             { type: "name",
               label: "Name",

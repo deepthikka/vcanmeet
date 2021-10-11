@@ -1,5 +1,4 @@
 import React from 'react';
-import { API } from 'aws-amplify';
 
 const eventMap = [0, 1, 2];
 
@@ -7,7 +6,7 @@ export default class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: {name: "", image: "", youtubeLink: ""},
+      user: {},
       events: [
         {
           img : "/images/horoscope.png",
@@ -51,9 +50,10 @@ export default class Home extends React.Component {
     this.setState({
       user: user
     })
-    if(user.profile.youtubeChannelID) {
+    //alert(JSON.stringify(user))
+    if(user.youtubeid) {
       
-      const currentChannelId = user.profile.youtubeChannelID;
+      const currentChannelId = user.youtubeid;
       const apikey = "AIzaSyB74HifExjAeP3uojTJzp-fJU2IVwu0fR8";
 
       var finalUrl = 'https://www.googleapis.com/youtube/v3/search?key=' + apikey + '&channelId='+ currentChannelId+ '&part=snippet,id&order=date&maxResults=4';
@@ -70,7 +70,7 @@ export default class Home extends React.Component {
     <div id="post-117" className="blog-postcol cp4cols">
       <div className="post-content">
         <a >
-          <img width="400" height="200" src={props.img} />
+          <img className="eventImg" src={props.img} />
         </a>
         <div className="row_345">
           <h3 className="blog-title">
@@ -126,11 +126,11 @@ export default class Home extends React.Component {
           <div id="latest-posts" style={{backgroundColor: "#ffffff"}} data-label="Latest posts" data-id="blog-section" data-events="latest_news" className="blog-section"> 
             <div className="gridContainer block1"> 
               <div className="profileblock">
-                <img className="center" width="150" height="150" src={this.state.user.image} />
+                <img src={this.state.user.image} />
               </div>
               <div className="nameblock">
                 <h3 className="fontstyle">{this.state.user.name}</h3>  
-                <h4 className="fontstyle">15 subscribers</h4>  
+                {/* <h4 className="fontstyle">15 subscribers</h4>   */}
               </div>
             </div>
 
@@ -181,11 +181,11 @@ export default class Home extends React.Component {
               
               <hr className="wp-block-separator is-style-wide"/>
               <h4>Description</h4>
-              <p>Ridges n Roads is my Travel Vlog. In my Travel Journey I will discuss the places visited, cuisines tried and the culture experienced. In my Vlog, I have covered #Sydney weekends, Kerala Tourism, Dubai.</p>
-              {this.state.user.profile && this.state.user.profile.youtubeChannelID ? (
+              <p>{this.state.user.description}</p>
+              {this.state.user && this.state.user.youtubeid ? (
                 <>
                 <h4>YouTube Link</h4>
-                <p><a href={'https://www.youtube.com/channel/'+ this.state.user.profile.youtubeChannelID}>https://www.youtube.com/channel/{this.state.user.profile.youtubeChannelID}</a>
+                <p><a href={'https://www.youtube.com/channel/'+ this.state.user.youtubeid}>https://www.youtube.com/channel/{this.state.user.youtubeid}</a>
                 </p>
                 <div className="blog-postsrow" data-type="row">
                   {videoElements}

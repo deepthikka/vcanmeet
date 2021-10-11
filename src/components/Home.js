@@ -44,10 +44,10 @@ export default class Home extends React.Component {
   render(){
 
     const Event = props => (
-    <div id="post-117" className="blog-postcol cp4cols">
+    <div className="blog-postcol cp4cols">
       <div className="post-content">
         <a >
-          <img width="400" height="200" src={props.img} />
+          <img className="eventImg" src={props.img} />
         </a>
         <div className="row_345">
           <h3 className="blog-title">

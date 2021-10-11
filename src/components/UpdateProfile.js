@@ -2,64 +2,120 @@ import React from 'react';
 import { API } from 'aws-amplify';
 
 import './../css/profile.css';
+import { NotificationManager } from 'react-notifications';
 
 export default class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: {}
+      user: {},
+      updatedUser: {}
     }
   }
 
-  async componentDidMount() {
-    const user = JSON.parse(localStorage.getItem('user'));
+  componentDidMount() {
+    let user = JSON.parse(localStorage.getItem('user'));
+    let updatedUser = JSON.parse(localStorage.getItem('profile'));
     this.setState({
-      user: user
+      user: user,
+      updatedUser: updatedUser
     })
   }
 
-  photoUpload = e =>{
+  photoUpload = e => {
     e.preventDefault();
     const reader = new FileReader();
     const file = e.target.files[0];
     let user = this.state.user;
+    let updatedUser = this.state.updatedUser;
     reader.onloadend = () => {
       user.image = reader.result;
+      updatedUser.image = reader.result;
       this.setState({
-        user: user
+        user: user,
+        updatedUser: updatedUser
       });
     }
     reader.readAsDataURL(file);
   }
-  
-  render(){
 
-    const ImgUpload =({
-      onChange,
-      src
-    })=>
-      <label htmlFor="photo-upload" className="custom-file-upload fas">
-        <div className="img-wrap img-upload" >
-          <img for="photo-upload" src={src}/>
-        </div>
-        <input id="photo-upload" type="file" onChange={onChange}/> 
-      </label>
-    
-    
-   
-    const Edit =({
-      onSubmit,
-      children,
-    })=>
-      <div className="card">
-        <form onSubmit={onSubmit}>
-          <h3>User Profile</h3>
-            {children}
-          <button type="submit" className="save">Update </button>
-        </form>
-      </div>
-    
+  editDescription = e => {
+    const desc = e.target.value;
+    var user = this.state.user;
+    var updatedUser = this.state.updatedUser;
+    user.description = desc;
+    updatedUser.description = desc;
+    this.setState({
+      user: user,
+      updatedUser: updatedUser
+    });
+  }
   
+  editName = e => {
+    const name = e.target.value;
+    var user = this.state.user;
+    var updatedUser = this.state.updatedUser;
+    user.name = name;
+    updatedUser.name = name;
+    this.setState({
+      user: user,
+      updatedUser: updatedUser
+    });
+  }
+
+  editYoutube = e => {
+    const id = e.target.value;
+    var user = this.state.user;
+    var updatedUser = this.state.updatedUser;
+    user.youtubeid = id;
+    updatedUser.youtubeid = id;
+    this.setState({
+      user: user,
+      updatedUser: updatedUser
+    });
+  }
+
+  editInstagram = e => {
+    const id = e.target.value;
+    var user = this.state.user;
+    var updatedUser = this.state.updatedUser;
+    user.instagramid = id;
+    updatedUser.instagramid = id;
+    this.setState({
+      user: user,
+      updatedUser: updatedUser
+    });
+  }
+
+  handleSubmit= e => {
+    e.preventDefault();
+    let updatedUser = this.state.updatedUser;
+    alert(JSON.stringify(updatedUser))
+    if(Object.keys(this.state.updatedUser).length == 0)
+      alert("No change in Profile data")
+    else {
+      updatedUser.id = this.state.user.id;
+      if(this.state.user.firstLogin)
+        updatedUser.userType = "Influencer";
+
+      let input = {body : updatedUser}
+      API.put('user', '/user', input)
+      .then(response => {
+        //alert(JSON.stringify(response))
+        NotificationManager.success('Profile Successfully Updated', 'Successful!', 1000);
+        this.state.user.firstLogin = false;
+        localStorage.setItem('user', JSON.stringify(this.state.user));
+        localStorage.setItem('profile', JSON.stringify(this.state.updatedUser));
+        window.location.href = '/profile';
+      })
+      .catch(error => {
+        // NotificationManager.error(error, 'Error!');
+        alert(error.response)
+      });
+    }
+  }
+      
+  render(){
     return (
       <>
       <div className="content">
@@ -67,32 +123,38 @@ export default class Home extends React.Component {
           <div id="latest-posts" style={{backgroundColor: "#ffffff"}} data-label="Latest posts" data-id="blog-section" data-events="latest_news" className="blog-section"> 
             <div className="gridContainer block2"> 
               <div>
-                <Edit onSubmit={this.handleSubmit}>
-                  {/* <ImgUpload onChange={this.photoUpload} src={imagePreviewUrl}/>
-                  <Name onChange={this.editName} value={name}/> */}
-                  <ImgUpload src={this.state.user.image} onChange={this.photoUpload}/>
-                  <div className="field">
-                    <label htmlFor="name">Name</label>
-                    <input id="name" type="text" onChange={this.handleSubmit} maxlength="50" 
-                      value={this.state.user.name} placeholder="Enter Full Name" required/>
-                  </div>
-                  <div className="field">
-                    <label htmlFor="description">Description</label>
-                    <textarea id="description" type="text" onChange={this.handleSubmit} maxlength="300" 
-                      value={this.state.user.description} placeholder="Tell us about yourself"/>
-                  </div>
-                  <div className="field">
-                    <label htmlFor="youtubeid">Youtube ID</label>
-                    <input id="youtubeid" type="text" onChange={this.handleSubmit} maxlength="50" 
-                      value={this.state.user.youtubeid} placeholder="Enter Youtube Channel ID"/>
-                  </div>
-                  <div className="field">
-                    <label htmlFor="instagramid">Instagram ID</label>
-                    <input id="instagramid" type="text" onChange={this.handleSubmit} maxlength="50" 
-                      value={this.state.user.instagramid} placeholder="Enter Instagram Channel ID"/>
-                  </div>
-
-                </Edit>
+                <div className="card">
+                  <form onSubmit={this.handleSubmit}>
+                    <h3>Update your Profile</h3>
+                    <label htmlFor="photo-upload" className="custom-file-upload fas">
+                      <div className="img-wrap img-upload" >
+                        <img for="photo-upload" src={this.state.user.image} alt=""/>
+                      </div>
+                      <input id="photo-upload" type="file" onChange={this.photoUpload}/> 
+                    </label>                    
+                    <div className="field">
+                      <label htmlFor="name">Name</label>
+                      <input id="name" type="text" onChange={this.editName} maxlength="50" 
+                        value={this.state.user.name} placeholder="Enter Full Name" required/>
+                    </div>
+                    <div className="field">
+                      <label htmlFor="description">Description</label>
+                      <textarea id="description" type="text" onChange={this.editDescription} maxlength="300" 
+                        value={this.state.user.description} placeholder="Tell us about yourself"/>
+                    </div>
+                    <div className="field">
+                      <label htmlFor="youtubeid">Youtube ID</label>
+                      <input id="youtubeid" type="text" onChange={this.editYoutube} maxlength="50" 
+                        value={this.state.user.youtubeid} placeholder="Enter Youtube Channel ID"/>
+                    </div>
+                    <div className="field">
+                      <label htmlFor="instagramid">Instagram ID</label>
+                      <input id="instagramid" type="text" onChange={this.editInstagram} maxlength="50" 
+                        value={this.state.user.instagramid} placeholder="Enter Instagram Channel ID"/>
+                    </div>
+                    <button type="submit" className="save" >Update </button>
+                  </form>
+                </div>
               </div>
             </div>
           </div>

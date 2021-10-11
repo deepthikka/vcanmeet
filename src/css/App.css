@@ -33,14 +33,19 @@
 }
 
 .profileblock {
-  flex-basis: 20%;
-  borderRadius: "50%";
+  width: 120px;
+  height: 120px;
+  display: flex;
+  overflow: hidden;
+  border-radius: 50%;
+  text-align: center;
+  background: #49afa8;
 }
 
 .nameblock {
-  flex-basis: 70%;
   font-size: 14px;
   font-weight: bold;
+  padding-left: 2em;
 }
 
 .fontstyle {

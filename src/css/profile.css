@@ -56,6 +56,7 @@
   
   .img-wrap{
     position: relative;
+    display: flex;
     width: 200px;
     height: 200px;
     overflow: hidden;
@@ -81,10 +82,10 @@
   .img-upload:hover:before{
    opacity: 1;
   }
-  img {
+  /* img {
     width: auto;
     height: 100%;
-  }
+  } */
   
   label{
     /* text-transform: uppercase; */
@@ -119,7 +120,7 @@
     max-width: 220px;
     overflow-wrap: break-word;
   }
-  button{
+  button:enabled{
     position: relative;
     color: #054231;
     letter-spacing: 1px;
@@ -135,6 +136,24 @@
     border: none;
     background: #64d488;
   }
+
+  button:disabled{
+    position: relative;
+    color: #FFFFFF;
+    letter-spacing: 1px;
+    width: 180px;
+    margin: 20px;
+    font-size: 18px;
+    padding: 10px;
+    text-align: center;
+    transition: 0.5s;
+    border-radius: 10px;
+    cursor: pointer;
+    /* border-radius: 25px; */
+    border: none;
+    background: #808080;
+  }
+
   .save{
     font-weight: 600;
     left: -20px;
@@ -147,7 +166,7 @@
     color: #fff;
     width: 180px;
   }
-  button:hover{
+  button:hover:enabled{
     left: 0;
     color: #fff;
     width: 180px;
@@ -186,5 +205,10 @@
     color: #caff81;
     transition: all .1s linear;
     cursor: pointer;
+  }
+
+  .eventImg {
+    width: 400px;
+    height: 200px;
   }
   

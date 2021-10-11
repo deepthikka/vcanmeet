@@ -5,6 +5,7 @@ import { Auth } from 'aws-amplify';
 import {NotificationManager} from 'react-notifications';
 import {AmplifyAuthenticator, AmplifySignIn} from "@aws-amplify/ui-react";
 import './../css/Login.css';
+import { API } from 'aws-amplify';
 
 export default class Login extends React.Component {
 
@@ -32,20 +33,41 @@ export default class Login extends React.Component {
     // });
   }
 
-  onGoogleLogIn(googleUser) {
+  async onGoogleLogIn(googleUser) {
     let user = {};
     user.id = googleUser.getBasicProfile().getId();
     user.name = googleUser.getBasicProfile().getName();
-    user.gname = googleUser.getBasicProfile().getGivenName();
-    user.fname = googleUser.getBasicProfile().getFamilyName();
     user.email = googleUser.getBasicProfile().getEmail();
     user.image = googleUser.getBasicProfile().getImageUrl();
-    user.profile = {
-          "youtubeChannelID":"UCXgGY0wkgOzynnHvSEVmE3A"
+    const data1 = await API.get('user','/user/'+user.id);
+    if(data1.error) {
+      alert(data1.error)
     }
 
+    if(data1.body) {
+      let profile = JSON.parse(data1.body);
+      localStorage.setItem('profile', JSON.stringify(profile));
+      user.firstLogin = false;
+      if(profile.name)
+        user.name = profile.name;
+
+      if(profile.image) 
+        user.image = profile.image;
+    
+      user.userType = profile.userType;
+      user.description = profile.description;
+      user.youtubeid = profile.youtubeid;
+      user.instagramid = profile.instagramid;    
+    } else {
+      user.firstLogin = true;
+      user.userType = "Follower";
+      user.description = "";
+      user.youtubeid = "";
+      user.instagramid = ""; 
+    }
+
+    NotificationManager.success('Welcome ' + user.name, 'Successful!', 1000);
     localStorage.setItem('user', JSON.stringify(user));
-    NotificationManager.success('Welcome ' + user.name, 'Successful!', 10000);
     window.location.reload(false);
   }
 

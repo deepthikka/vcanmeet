@@ -20,12 +20,23 @@
           "partitionKeyName": "Name",
           "partitionKeyType": "S",
           "streamArn": "arn:aws:dynamodb:us-east-2:943954999559:table/Master-Category/stream/2021-09-26T09:04:44.851"
+        },
+        "user": {
+          "tableName": "user",
+          "region": "us-east-2",
+          "arn": "arn:aws:dynamodb:us-east-2:943954999559:table/user",
+          "partitionKeyName": "id",
+          "partitionKeyType": "S"
         }
       },
       "function": {
         "categoryFunction": {
           "deploymentBucketName": "amplify-amplify9befba8829824-staging-201151-deployment",
           "s3Key": "amplify-builds/categoryFunction-70333975303735514541-build.zip"
+        },
+        "userFunction": {
+          "deploymentBucketName": "amplify-amplify9befba8829824-staging-201151-deployment",
+          "s3Key": "amplify-builds/userFunction-3139767144562f724538-build.zip"
         }
       },
       "auth": {

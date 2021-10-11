@@ -1,9 +1,8 @@
 import React, {useContext, useEffect, useState} from 'react';
-import { Hub } from "aws-amplify";
+import { Hub, API } from "aws-amplify";
 
 import {
   Redirect,
-  useHistory,
   BrowserRouter as Router,
   Switch,
   Route
@@ -23,10 +22,10 @@ import 'react-notifications/lib/notifications.css';
 
 function App() {
 
-  const history = useHistory();
+  const [event, setEvent] = useState(null);
 
   function getUser() {
-   try {
+    try {
         Auth.currentUserInfo()
         .then((res) => {
           let user = {};
@@ -34,24 +33,52 @@ function App() {
           user.name = res.attributes.name;
           user.email = res.attributes.email;
           user.image = res.attributes.picture;
-          user.profile = {
-            "youtubeChannelID":"UCXgGY0wkgOzynnHvSEVmE3A",
-            "youtubeLink":"https://www.youtube.com/channel/UCXgGY0wkgOzynnHvSEVmE3A"
-          }
-          //alert(JSON.stringify(user))
+
+          API.get('user','/user/'+user.id)
+          .then(response => {
+            if(response.body) {
+              alert(response.body)
+              let profile = JSON.parse(response.body);
+              user.firstLogin = false;
+              if(profile.name)
+                user.name = profile.name;
+        
+              if(profile.image)
+                user.image = profile.image;
+            
+              user.userType = profile.userType;
+              user.description = profile.description;
+              user.youtubeid = profile.youtubeid;
+              user.instagramid = profile.instagramid;    
+            } else {
+              user.firstLogin = true;
+              user.userType = "Follower";
+              user.description = "";
+              user.youtubeid = "";
+              user.instagramid = ""; 
+              user.image = "";
+            }                  
+
+            localStorage.setItem('user', JSON.stringify(user));
+            NotificationManager.success('Welcome ' + user.name, 'Successful!', 1000);
+            window.location.reload(false);
+            refreshPage();
+            return res;
+          })
+          .catch(error => {
+            // NotificationManager.error(error, 'Error!');
+            alert(error.response)
+          });
       
-          localStorage.setItem('user', JSON.stringify(user));
-          NotificationManager.success('Welcome ' + user.name, 'Successful!', 10000);
-          window.location.reload(false);
-          refreshPage();
-          return res;
         })
         .catch(err => {
           localStorage.setItem('user', '');
+          localStorage.setItem('profile', '');
           return null;
         });
     } catch(e) {
       localStorage.setItem('user', '');
+      localStorage.setItem('profile', '');
       return null;
     }
   }
@@ -62,15 +89,14 @@ function App() {
   
   useEffect(() => {
     Hub.listen('auth', ({ payload: { event, data } }) => {
-      alert(event);
+      //alert(event);
       switch (event) {
         case 'signIn':
           getUser();
           break;
         case 'signUp':
             NotificationManager.success('Succesfully Signed up!', 'Successful!', 2000);
-            <Redirect from="/signup" to="/login" />
-            // history.push('/login');
+            window.location.href = '/login';
             break;
         case 'signOut':
         case 'oAuthSignOut':
@@ -116,15 +142,15 @@ function App() {
         <div className="main_menu_col">
           <div id="drop_mainmenu_container" className="menu-menu-home-container">
             <ul id="drop_mainmenu" className="fm2_drop_mainmenu" >
-              <li id="menu-item-37" className="menu-item menu-item-type-custom menu-item-object-custom current-menu-item current_page_item menu-item-home menu-item-37">
+              <li id="menu-item-37" className="menu-item menu-item-type-custom menu-item-object-custom current-menu-item menu-item-home menu-item-37">
               <div className="searchBar">
-                <input id="searchQueryInput" type="text" name="searchQueryInput" placeholder="Find an Event" value="" />
+                <input id="searchQueryInput" type="text" name="searchQueryInput" placeholder="Find an Event" value={event} />
                 <button id="searchQuerySubmit" type="submit" name="searchQuerySubmit">
                 <svg className="svgstyle" viewBox="0 0 24 24"><path fill="#666666" d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z" /></svg>
                 </button>
               </div>
               </li>
-              <li id="menu-item-37" className="menu-item menu-item-type-custom menu-item-object-custom current-menu-item current_page_item menu-item-home menu-item-37"><a href="/" aria-current="page">Home</a></li>
+              <li id="menu-item-37" className="menu-item menu-item-type-custom menu-item-object-custom current-menu-item menu-item-home menu-item-37"><a href="/" aria-current="page">Home</a></li>
               {localStorage.getItem('user') ? (
                 <><li id="menu-item-235" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-235"><a href="/profile">Profile</a></li>
                 <li id="menu-item-77" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-77"><a href="#" onClick={e => logout()}>Log Out</a></li>
@@ -170,14 +196,15 @@ function App() {
       :
       <Route exact path="/login" component={Login} />
       }
-      {(localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')).profile) ?
+      {/* {(localStorage.getItem('user') && (JSON.parse(localStorage.getItem('user')).firstLogin) == false) ?
       <Route exact path="/profile" component={Profile} />
       : <Redirect from="/profile" to="/updateProfile" />
-      }
+      } */}
       {localStorage.getItem('user') ?
       <Route exact path="/profile" component={Profile} />
       : <Redirect from="/profile" to="/login" />
-      }      {localStorage.getItem('user') ?
+      }      
+      {localStorage.getItem('user') ?
       <Route exact path="/updateProfile" component={UpdateProfile} />
       : <Redirect from="/updateProfile" to="/login" />
       }

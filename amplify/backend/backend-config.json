@@ -30,6 +30,12 @@
       "serviceType": "imported",
       "providerPlugin": "awscloudformation",
       "dependsOn": []
+    },
+    "user": {
+      "service": "DynamoDB",
+      "serviceType": "imported",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": []
     }
   },
   "function": {
@@ -48,6 +54,11 @@
           ]
         }
       ]
+    },
+    "userFunction": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
     }
   },
   "api": {
@@ -58,6 +69,20 @@
         {
           "category": "function",
           "resourceName": "categoryFunction",
+          "attributes": [
+            "Name",
+            "Arn"
+          ]
+        }
+      ]
+    },
+    "user": {
+      "service": "API Gateway",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [
+        {
+          "category": "function",
+          "resourceName": "userFunction",
           "attributes": [
             "Name",
             "Arn"
