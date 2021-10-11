@@ -39,7 +39,10 @@ export default class Login extends React.Component {
     user.name = googleUser.getBasicProfile().getName();
     user.email = googleUser.getBasicProfile().getEmail();
     user.image = googleUser.getBasicProfile().getImageUrl();
+
+    NotificationManager.success('Login Successful!! Loading Profile', 'Successful!', 10000);
     const data1 = await API.get('user','/user/'+user.id);
+
     if(data1.error) {
       alert(data1.error)
     }
@@ -66,7 +69,6 @@ export default class Login extends React.Component {
       user.instagramid = ""; 
     }
 
-    NotificationManager.success('Welcome ' + user.name, 'Successful!', 1000);
     localStorage.setItem('user', JSON.stringify(user));
     window.location.reload(false);
   }

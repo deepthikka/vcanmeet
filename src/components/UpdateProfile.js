@@ -26,6 +26,11 @@ export default class Home extends React.Component {
     e.preventDefault();
     const reader = new FileReader();
     const file = e.target.files[0];
+
+    if (file.size > 60000) {
+      alert("Please upload a photo less than 60kb");
+      return;
+    }
     let user = this.state.user;
     let updatedUser = this.state.updatedUser;
     reader.onloadend = () => {
@@ -90,7 +95,6 @@ export default class Home extends React.Component {
   handleSubmit= e => {
     e.preventDefault();
     let updatedUser = this.state.updatedUser;
-    alert(JSON.stringify(updatedUser))
     if(Object.keys(this.state.updatedUser).length == 0)
       alert("No change in Profile data")
     else {
@@ -110,7 +114,7 @@ export default class Home extends React.Component {
       })
       .catch(error => {
         // NotificationManager.error(error, 'Error!');
-        alert(error.response)
+        alert("Image upload Error. Kindly retry!!")
       });
     }
   }

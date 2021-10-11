@@ -34,11 +34,12 @@ function App() {
           user.email = res.attributes.email;
           user.image = res.attributes.picture;
 
+          NotificationManager.success('Login Successful!! Loading Profile', 'Successful!', 10000);
           API.get('user','/user/'+user.id)
           .then(response => {
             if(response.body) {
-              alert(response.body)
               let profile = JSON.parse(response.body);
+              localStorage.setItem('profile', JSON.stringify(profile));
               user.firstLogin = false;
               if(profile.name)
                 user.name = profile.name;
@@ -60,7 +61,6 @@ function App() {
             }                  
 
             localStorage.setItem('user', JSON.stringify(user));
-            NotificationManager.success('Welcome ' + user.name, 'Successful!', 1000);
             window.location.reload(false);
             refreshPage();
             return res;
@@ -101,6 +101,7 @@ function App() {
         case 'signOut':
         case 'oAuthSignOut':
           localStorage.setItem('user', '');
+          localStorage.setItem('profile', '');
           refreshPage();
           break;
         case 'signUp_failure':
