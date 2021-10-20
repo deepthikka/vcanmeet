@@ -44,54 +44,20 @@ export default class Home extends React.Component {
     reader.readAsDataURL(file);
   }
 
-  editDescription = e => {
-    const desc = e.target.value;
+  handleChange = e => {
+    const key = e.target.id;
+    const value = e.target.value;
     var user = this.state.user;
     var updatedUser = this.state.updatedUser;
-    user.description = desc;
-    updatedUser.description = desc;
+    user[key] = value;
+    updatedUser[key] = value;
+
     this.setState({
       user: user,
       updatedUser: updatedUser
     });
   }
   
-  editName = e => {
-    const name = e.target.value;
-    var user = this.state.user;
-    var updatedUser = this.state.updatedUser;
-    user.name = name;
-    updatedUser.name = name;
-    this.setState({
-      user: user,
-      updatedUser: updatedUser
-    });
-  }
-
-  editYoutube = e => {
-    const id = e.target.value;
-    var user = this.state.user;
-    var updatedUser = this.state.updatedUser;
-    user.youtubeid = id;
-    updatedUser.youtubeid = id;
-    this.setState({
-      user: user,
-      updatedUser: updatedUser
-    });
-  }
-
-  editInstagram = e => {
-    const id = e.target.value;
-    var user = this.state.user;
-    var updatedUser = this.state.updatedUser;
-    user.instagramid = id;
-    updatedUser.instagramid = id;
-    this.setState({
-      user: user,
-      updatedUser: updatedUser
-    });
-  }
-
   handleSubmit= e => {
     e.preventDefault();
     let updatedUser = this.state.updatedUser;
@@ -132,28 +98,28 @@ export default class Home extends React.Component {
                     <h3>Update your Profile</h3>
                     <label htmlFor="photo-upload" className="custom-file-upload fas">
                       <div className="img-wrap img-upload" >
-                        <img for="photo-upload" src={this.state.user.image} alt=""/>
+                        <img htmlFor="photo-upload" src={this.state.user.image} alt=""/>
                       </div>
                       <input id="photo-upload" type="file" onChange={this.photoUpload}/> 
                     </label>                    
                     <div className="field">
                       <label htmlFor="name">Name</label>
-                      <input id="name" type="text" onChange={this.editName} maxlength="50" 
+                      <input id="name" type="text" onChange={this.handleChange} maxLength="50" 
                         value={this.state.user.name} placeholder="Enter Full Name" required/>
                     </div>
                     <div className="field">
                       <label htmlFor="description">Description</label>
-                      <textarea id="description" type="text" onChange={this.editDescription} maxlength="300" 
+                      <textarea id="description" type="text" onChange={this.handleChange} maxLength="300" 
                         value={this.state.user.description} placeholder="Tell us about yourself"/>
                     </div>
                     <div className="field">
                       <label htmlFor="youtubeid">Youtube ID</label>
-                      <input id="youtubeid" type="text" onChange={this.editYoutube} maxlength="50" 
+                      <input id="youtubeid" type="text" onChange={this.handleChange} maxLength="50" 
                         value={this.state.user.youtubeid} placeholder="Enter Youtube Channel ID"/>
                     </div>
                     <div className="field">
                       <label htmlFor="instagramid">Instagram ID</label>
-                      <input id="instagramid" type="text" onChange={this.editInstagram} maxlength="50" 
+                      <input id="instagramid" type="text" onChange={this.handleChange} maxLength="50" 
                         value={this.state.user.instagramid} placeholder="Enter Instagram Channel ID"/>
                     </div>
                     <button type="submit" className="save" >Update </button>

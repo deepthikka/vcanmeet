@@ -17,6 +17,7 @@ import Login from './components/Login';
 import Signup from './components/Signup';
 import Profile from './components/Profile';
 import UpdateProfile from './components/UpdateProfile';
+import CreateEvent from './components/CreateEvent';
 
 import 'react-notifications/lib/notifications.css';
 
@@ -209,13 +210,14 @@ function App() {
       <Route exact path="/updateProfile" component={UpdateProfile} />
       : <Redirect from="/updateProfile" to="/login" />
       }
+      <Route exact path="/createEvent" component={CreateEvent}/>
     </Switch>
     </body>
-    <div class="footer">
-      <div class="gridContainer">
-        <div class="row">
-          <p class="footer-copyright">
-            &copy;&nbsp;&nbsp;2021&nbsp;VcanMeet.&nbsp;Contact : admin@megamtech.com</p>
+    <div className="footer">
+      <div className="gridContainer">
+        <div className="row">
+          <p className="footer-copyright">
+            &copy;&nbsp;&nbsp;2021&nbsp;VcanMeet v0.2&nbsp;Contact : info@vcanmeet.com</p>
         </div>
       </div>
     </div>

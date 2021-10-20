@@ -130,6 +130,7 @@ export default class Home extends React.Component {
               </div>
               <div className="nameblock">
                 <h3 className="fontstyle">{this.state.user.name}</h3>  
+                <p className="descstyle">{this.state.user.description}</p>
                 {/* <h4 className="fontstyle">15 subscribers</h4>   */}
               </div>
             </div>
@@ -138,10 +139,10 @@ export default class Home extends React.Component {
           <div className="gridContainer"> 
             <hr className="wp-block-separator is-style-wide"/>
             <div className="blog-postsrow dark-text" data-type="row" data-dynamic-columns="one_page_express_latest_news_columns" data-content-shortcode="one_page_express_latest_news">            
-              <div id="post-117" className="blog-postcol cp3cols">
-                <div className="post-content">
+              <div className="blog-postcol cp3cols">
+                <div>
                   <div className="row_345">
-                  <img style={{width: 100, height: 100, borderRadius: "50%"}} src="/images/profile.png" />
+                  <img style={{width: 80, height: 80, borderRadius: "50%"}} src="/images/profile.png" />
                     <a className="button blue small" href="/updateProfile">
                       <span data-theme="one_page_express_latest_news_read_more">Edit Profile</span>
                     </a>
@@ -149,19 +150,19 @@ export default class Home extends React.Component {
                 </div>
               </div>      
               <div className="blog-postcol cp3cols">
-                <div className="post-content">
+                <div>
                   <div className="row_345">
-                    <img style={{width: 100, height: 100, borderRadius: "50%"}} src="/images/event.png" />
-                    <a className="button green small">
+                    <img style={{width: 80, height: 80, borderRadius: "50%"}} src="/images/event.png" />
+                    <a className="button green small" href="/createEvent">
                       <span data-theme="one_page_express_latest_news_read_more">Create Event</span>
                     </a>
                   </div>
                 </div>
               </div>      
               <div className="blog-postcol cp3cols">
-                <div className="post-content">
+                <div>
                   <div className="row_345">
-                    <img style={{width: 100, height: 100, borderRadius: "50%"}} src="/images/review.jpg" />
+                    <img style={{width: 80, height: 80, borderRadius: "50%"}} src="/images/review.png" />
                     <a className="button yellow small">
                       <span data-theme="one_page_express_latest_news_read_more">View Reviews</span>
                     </a>
@@ -169,9 +170,9 @@ export default class Home extends React.Component {
                 </div>
               </div>      
               <div className="blog-postcol cp3cols">
-                <div className="post-content">
+                <div>
                   <div className="row_345">
-                  <img style={{width: 100, height: 100, borderRadius: "50%"}} src="/images/security.png" />
+                  <img style={{width: 80, height: 80, borderRadius: "50%"}} src="/images/security2.png" />
                     <a className="button purple small">
                       <span data-theme="one_page_express_latest_news_read_more">Security Setup</span>
                     </a>
@@ -180,8 +181,7 @@ export default class Home extends React.Component {
               </div>  
               
               <hr className="wp-block-separator is-style-wide"/>
-              <h4>Description</h4>
-              <p>{this.state.user.description}</p>
+
               {this.state.user && this.state.user.youtubeid ? (
                 <>
                 <h4>YouTube Link</h4>
@@ -195,6 +195,7 @@ export default class Home extends React.Component {
               <h4></h4>
               } 
             </div> 
+            <hr className="wp-block-separator is-style-wide"/>
           </div>
         
           <div className="gridContainer"> 
