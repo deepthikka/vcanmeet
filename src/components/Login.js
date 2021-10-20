@@ -74,7 +74,7 @@ export default class Login extends React.Component {
   }
 
   onFailure(error) {
-    NotificationManager.error('SignIn Failed! ' + error, 'Error!');
+    NotificationManager.error('SignIn Failed! ' + JSON.stringify(error), 'Error!');
   }
 
   render(){
