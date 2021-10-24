@@ -18,6 +18,7 @@ import Signup from './components/Signup';
 import Profile from './components/Profile';
 import UpdateProfile from './components/UpdateProfile';
 import CreateEvent from './components/CreateEvent';
+import Event from './components/Event';
 
 import 'react-notifications/lib/notifications.css';
 
@@ -211,6 +212,7 @@ function App() {
       : <Redirect from="/updateProfile" to="/login" />
       }
       <Route exact path="/createEvent" component={CreateEvent}/>
+      <Route exact path="/event" component={Event}/>
     </Switch>
     </body>
     <div className="footer">

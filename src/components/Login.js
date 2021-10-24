@@ -47,9 +47,10 @@ export default class Login extends React.Component {
       alert(data1.error)
     }
 
+    let profile = {};
+
     if(data1.body) {
-      let profile = JSON.parse(data1.body);
-      localStorage.setItem('profile', JSON.stringify(profile));
+      profile = JSON.parse(data1.body);
       user.firstLogin = false;
       if(profile.name)
         user.name = profile.name;
@@ -68,7 +69,7 @@ export default class Login extends React.Component {
       user.youtubeid = "";
       user.instagramid = ""; 
     }
-
+    localStorage.setItem('profile', JSON.stringify(profile));
     localStorage.setItem('user', JSON.stringify(user));
     window.location.reload(false);
   }

@@ -58,76 +58,70 @@ app.get('/user/:id', function(req, res) {
   let result = [];
   result.Item = {id: req.params.id};
 
-  // let params = {
-  //   TableName : tablename,
-  //   Key: {
-  //     "id": {"S": req.params.id}
-  //   }
-  // }
+  let params = {
+    TableName : tablename,
+    Key: {
+      "id": req.params.id
+    }
+  }
 
-  // dynamodb.getItem(params, (error, result) => {
-  //   if (error) {
-  //     res.json({statusCode: 500, error: error.message});
-  //   } else {
-  //     res.json({statusCode: 200, url: req.url, body: JSON.stringify(result.Item)});
-  //   }
-  // })
-  res.json({statusCode: 200, url: req.url, body: JSON.stringify(result.Item)});
+  dynamodb.get(params, (error, result) => {
+    if (error) {
+      res.json({statusCode: 500, error: error.message});
+    } else {
+      res.json({statusCode: 200, url: req.url, body: JSON.stringify(result.Item)});
+    }
+  })
 });
 
-/****************************
-* Example post method *
-****************************/
-
-app.post('/user', function(req, res) {
+app.put('/user', function(req, res) {
   // Add your code here
   let user = req.body;
   var params = {
     TableName: tablename,
     Item: user
   }
-  dynamodb.putItem(params, (error, result) => {
+  dynamodb.put(params, (error, result) => {
     if (error) {
       res.json({statusCode: 500, error: error.message});
     } else {
       res.json({statusCode: 200, url: req.url, body: "Success"});
     }
   })
-  res.json({success: 'post call succeed!', url: req.url, body: req.body})
 });
 
-app.post('/user/*', function(req, res) {
-  // Add your code here
-  res.json({success: 'post call succeed!', url: req.url, body: req.body})
-});
+// app.post('/user/*', function(req, res) {
+//   // Add your code here
+//   res.json({success: 'post call succeed!', url: req.url, body: req.body})
+// });
 
-/****************************
-* Example put method *
-****************************/
+// /****************************
+// * Example post method *
+// ****************************/
 
-app.put('/user', function(req, res) {
-  // Add your code here
-  res.json({success: 'put call succeed!', url: req.url, body: req.body})
-});
+// app.post('/user', function(req, res) {
+//   // Add your code here
+//   res.json({success: 'p call succeed!', url: req.url, body: req.body})
+// });
 
-app.put('/user/*', function(req, res) {
-  // Add your code here
-  res.json({success: 'put call succeed!', url: req.url, body: req.body})
-});
+// app.put('/user/*', function(req, res) {
+//   // Add your code here
+//   res.json({success: 'put call succeed!', url: req.url, body: req.body})
+// });
 
-/****************************
-* Example delete method *
-****************************/
+// /****************************
+// * Example delete method *
+// ****************************/
 
-app.delete('/user', function(req, res) {
-  // Add your code here
-  res.json({success: 'delete call succeed!', url: req.url});
-});
+// app.delete('/user', function(req, res) {
+//   // Add your code here
+//   res.json({success: 'delete call succeed!', url: req.url});
+// });
 
-app.delete('/user/*', function(req, res) {
-  // Add your code here
-  res.json({success: 'delete call succeed!', url: req.url});
-});
+// app.delete('/user/*', function(req, res) {
+//   // Add your code here
+//   res.json({success: 'delete call succeed!', url: req.url});
+// });
 
 app.listen(3000, function() {
     console.log("App started")

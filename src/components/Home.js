@@ -39,8 +39,8 @@ export default class Home extends React.Component {
     }
     let cat = JSON.parse(data.body);
     this.setState({categories: cat});
-}
-
+  }
+  
   render(){
 
     const Event = props => (
