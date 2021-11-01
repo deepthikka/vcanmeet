@@ -1,47 +1,13 @@
 import React from 'react';
-
-const eventMap = [0, 1, 2];
+import { API } from 'aws-amplify';
 
 export default class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       user: {},
-      events: [
-        {
-          img : "/images/horoscope.png",
-          title : "Horoscope Reading",
-          author:"Suvetha",
-          date:"September 18, 2021"
-        },
-        {
-          img : "/images/Tarot.png",
-          title : "Tarot Card Reading",
-          author:"Suvetha",
-          date:"September 18, 2021"
-        },
-        {
-          img : "/images/dancing.jpg",
-          title : "Dancing Class",
-          author:"Suvetha",
-          date:"September 18, 2021"
-        },
-      ],
-      videos: [
-        // {
-        //   url:"https://www.youtube.com/embed/UWY1OnCXPB0"
-        // },
-        // {
-        //   url:"https://www.youtube.com/embed/UWY1OnCXPB0"
-        // },
-        // {
-        //   url:"https://www.youtube.com/embed/UWY1OnCXPB0"
-        // },
-        // {
-        //   url:"https://www.youtube.com/embed/UWY1OnCXPB0"
-        // },
-
-      ]
+      events: [],
+      videos: []
     }
   }
 
@@ -62,6 +28,15 @@ export default class Home extends React.Component {
         videos: data.items
       })
     }
+
+    const data = await API.get('event','/event/' + user.id)
+    if(data.error) {
+      alert(data.error)
+      return;
+    }
+    let eventList = JSON.parse(data.body);
+    this.setState({events: eventList});
+    // alert(data.body)
   }
   
 
@@ -74,7 +49,7 @@ export default class Home extends React.Component {
         </a>
         <div className="row_345">
           <h3 className="blog-title">
-            <a rel="bookmark" >{props.title}</a>
+            <a href={'/event/' + props.id} rel="bookmark" >{props.title}</a>
           </h3>
           <hr className="blog-separator"></hr>
           <div className="post-header">
@@ -93,8 +68,9 @@ export default class Home extends React.Component {
     if(this.state.events) {
       for(var i=0; i<this.state.events.length; i++) {
         eventElements.push (
-          <Event img={this.state.events[i].img} title={this.state.events[i].title} 
-                author={this.state.events[i].author} date={this.state.events[i].date}/>
+          <Event img={this.state.events[i].image} title={this.state.events[i].eventName} 
+                author={this.state.events[i].userName} date={this.state.events[i].eventDate}
+                id={this.state.events[i].eventId}/>
         );
       }
     }

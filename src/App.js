@@ -212,7 +212,7 @@ function App() {
       : <Redirect from="/updateProfile" to="/login" />
       }
       <Route exact path="/createEvent" component={CreateEvent}/>
-      <Route exact path="/event" component={Event}/>
+      <Route exact path="/event/:id" component={Event}/>
     </Switch>
     </body>
     <div className="footer">

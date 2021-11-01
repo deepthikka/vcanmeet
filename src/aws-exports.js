@@ -45,6 +45,10 @@ const awsmobile = {
         {
             "tableName": "user",
             "region": "us-east-2"
+        },
+        {
+            "tableName": "Event",
+            "region": "us-east-2"
         }
     ],
     "aws_cloud_logic_custom": [
@@ -56,6 +60,11 @@ const awsmobile = {
         {
             "name": "user",
             "endpoint": "https://90fmckuqee.execute-api.us-east-2.amazonaws.com/staging",
+            "region": "us-east-2"
+        },
+        {
+            "name": "event",
+            "endpoint": "https://mpoilve1gi.execute-api.us-east-2.amazonaws.com/staging",
             "region": "us-east-2"
         }
     ]

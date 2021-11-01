@@ -17,12 +17,16 @@
     justify-content: center;
     box-shadow: 15px 10px 25px 0px  #3fa1a9;
     background: #fff;
-    /* background-image: url('https://github.com/OlgaKoplik/CodePen/blob/master/leaf2.png?raw=true'), url('https://github.com/OlgaKoplik/CodePen/blob/master/leaf.png?raw=true'); */
-    background-repzeat: no-repeat, no-repeat;
+    background-repeat: no-repeat, no-repeat;
     background-position: 120% -5%, 200% -40%;
     background-size: 40%, 80%;
     animation: open .5s;
   }
+
+  .eventBackground {
+    background: #fff;
+  }
+
   @keyframes open {
     0%  {background-position: 166% -25%, 220% -69%;}
     100%{background-position: 120% -5%, 200% -40%;}
@@ -211,4 +215,16 @@
     width: 400px;
     height: 200px;
   }
+
+  .dateTimeDiv {
+    float: left;
+    position: relative;
+  }
   
+  .wphi-video,
+  .header_image img
+  {
+    width: 1280px !important;
+    height: 520px !important;
+    margin: 0 auto !important;
+  }

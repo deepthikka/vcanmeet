@@ -61,7 +61,7 @@ export default class Home extends React.Component {
   handleSubmit= e => {
     e.preventDefault();
     let updatedUser = this.state.updatedUser;
-    if(Object.keys(this.state.updatedUser).length == 0)
+    if(Object.keys(this.state.updatedUser).length === 0)
       alert("No change in Profile data")
     else {
       updatedUser.id = this.state.user.id;

@@ -1,5 +1,7 @@
 import React from 'react';
+import moment from 'moment';
 import { API } from 'aws-amplify';
+import SelectCurrency from 'react-select-currency';
 
 import './../css/profile.css';
 import { NotificationManager } from 'react-notifications';
@@ -10,16 +12,31 @@ export default class Home extends React.Component {
     super(props);
     this.state = {
       event: {},
-      user: {}
+      user: {},
+      categories:{}
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     let user = JSON.parse(localStorage.getItem('user'));
     this.setState({
       user: user
     })
-    this.state.event.user = user.id;
+    let event = {};
+    event.userId = user.id;
+    event.userName = user.name;
+    event.currency = "INR";
+    event.language = "English";
+
+    const data = await API.get('category','/category/limit')
+    if(data.error) {
+      alert(data.error)
+      return;
+    }
+    let cat = JSON.parse(data.body);
+    this.setState({categories: cat});
+    event.category = cat[0].Title;
+    this.setState({event: event});
   }
 
   photoUpload = e => {
@@ -45,6 +62,7 @@ export default class Home extends React.Component {
     const key = e.target.id;
     const value = e.target.value;
     var event = this.state.event;
+    //alert(key + " " + value)
     event[key] = value;
     this.setState({
       event: event
@@ -52,34 +70,40 @@ export default class Home extends React.Component {
     //alert(JSON.stringify(event))
   }
 
+
   handleSubmit= e => {
     e.preventDefault();
-    let updatedUser = this.state.updatedUser;
-    if(Object.keys(this.state.updatedUser).length == 0)
-      alert("No change in Profile data")
-    else {
-      updatedUser.id = this.state.user.id;
-      if(this.state.user.firstLogin)
-        updatedUser.userType = "Influencer";
+    let event = this.state.event;
+    if(event.eventId == null) {
+      event.eventId = new Date().valueOf() + "";
+      //alert("Created Event ID" + event.eventId);
+    }
 
-      let input = {body : updatedUser}
-      API.put('user', '/user', input)
+    let input = {body : event}
+    API.put('event', '/event', input)
       .then(response => {
-        //alert(JSON.stringify(response))
-        NotificationManager.success('Profile Successfully Updated', 'Successful!', 1000);
-        this.state.user.firstLogin = false;
-        localStorage.setItem('user', JSON.stringify(this.state.user));
-        localStorage.setItem('profile', JSON.stringify(this.state.updatedUser));
-        window.location.href = '/profile';
+
+        if(response.error) {
+          NotificationManager.error(response.error, 'Error!');
+        } else {
+          NotificationManager.success('Event Created Successfully', 'Successful!', 1000);
+          window.location.href = '/profile';
+        }
       })
       .catch(error => {
-        // NotificationManager.error(error, 'Error!');
-        alert("Image upload Error. Kindly retry!!")
+        NotificationManager.error(error, 'Error!');
       });
-    }
   }
       
   render(){
+
+    let categoryList = this.state.categories && this.state.categories.length > 0
+      && this.state.categories.map((item, i) => {
+        return (
+          <option value={item.Title}>{item.Title}</option>
+        )
+      }, this);
+
     return (
       <>
       <div className="content">
@@ -99,17 +123,15 @@ export default class Home extends React.Component {
                     <label htmlFor="name">Event Banner</label>
                     <div className="field">
                       <label htmlFor="name">Event Name</label>
-                      <input id="name" type="text" onChange={this.handleChange} maxLength="50" 
-                        value={this.state.event.name} placeholder="Enter Event Name" required/>
+                      <input id="eventName" type="text" onChange={this.handleChange} maxLength="50" 
+                        value={this.state.event.eventName} placeholder="Enter Event Name" required/>
                     </div>
                     <div className="field">
                       <label htmlFor="category">Event Category</label>
-                      <select id="category" value={this.state.event.category} onChange={this.handleChange}
+                      <select id="category" value={this.state.event.category}
+                        onChange={this.handleChange}
                         placeholder="Select the category for Event" required>
-                        <option value="Music">Music</option>
-                        <option value="Cooking">Cooking</option>
-                        <option selected value="Dance">Dance</option>
-                        <option value="Yoga">Yoga</option>
+                        {categoryList}
                       </select>
                     </div>
                     <div className="field">
@@ -118,31 +140,35 @@ export default class Home extends React.Component {
                         value={this.state.event.description} placeholder="Tell us about the event"/>
                     </div>
                     <div className="field">
-                      <label htmlFor="date">Event Date</label>
-                      <input id="eventDate" type="date" onChange={this.handleChange} maxLength="50" 
-                        value={this.state.event.eventDate} placeholder="Enter Event Date" required/>
-                    </div>                    
-                    <div className="field">
-                      <label htmlFor="startTime">Event Time</label>
-                      <input id="startTime" type="time" onChange={this.handleChange} maxLength="50" 
+                      <label htmlFor="date">Event Date and Time</label>     
+                    </div>
+                    <div>                  
+                      <input id="eventDate" style={{width:"250px"}} type="date" onChange={this.handleChange} maxLength="50" 
+                        value={this.state.event.eventDate} min={moment().format("YYYY-MM-DD")}
+                        placeholder="Enter Event Date" required/>
+                      <input id="startTime" style={{width:"150px"}} type="time" onChange={this.handleChange} maxLength="50" 
                         value={this.state.event.startTime} placeholder="Enter Event Start Time" required/>
-                      <input id="endTime" type="time" onChange={this.handleChange} maxLength="50" 
-                        value={this.state.event.endTime} placeholder="Enter Event End Time" required/>         
-                      {/* <TimezonePicker id="timeZone" value={this.state.event.timeZone} defaultValue={'America/New_York'}
-                            onChange={this.handleChange} required/>            */}
                     </div>
                     <div className="field">
-                      <label htmlFor="rate">Rate</label>
-                      <input id="rate" type="number" onChange={this.handleChange} maxLength="50" 
-                        value={this.state.event.rate} placeholder="Enter Rate per seat" required/>
+                      <label htmlFor="duration">Event Duration</label>
+                      <input id="duration" type="number" onChange={this.handleChange} maxLength="50" 
+                        value={this.state.event.duration} placeholder="Enter Duration" required/>          
+                    </div>
+                    <div className="field">
+                      <label htmlFor="price">Ticket Price</label>     
+                    </div>                    
+                    <div>
+                      <input id="price" style={{width:"250px"}}  type="number" onChange={this.handleChange} maxLength="50" 
+                        value={this.state.event.price} placeholder="Enter Price per ticket" required/>
+                      <SelectCurrency style={{width:"150px"}} id="currency" value={'INR'} onChange={this.handleChange} required/>
                     </div>
                     <div className="field">
                       <label htmlFor="language">Language</label>
                       <select id="language" value={this.state.event.language} onChange={this.handleChange}
                         placeholder="Select the Language for the Event" required>
-                        <option value="English">English</option>
+                        <option selected value="English">English</option>
                         <option value="French">French</option>
-                        <option selected value="Tamil">Tamil</option>
+                        <option value="Tamil">Tamil</option>
                         <option value="Hindi">Hindi</option>
                       </select>
                     </div>
