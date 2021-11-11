@@ -139,7 +139,7 @@ export default class Home extends React.Component {
                 <div>
                   <div className="row_345">
                     <img style={{width: 80, height: 80, borderRadius: "50%"}} src="/images/review.png" />
-                    <a className="button yellow small">
+                    <a className="button yellow small" href="/eventList">
                       <span data-theme="one_page_express_latest_news_read_more">View Reviews</span>
                     </a>
                   </div>
@@ -160,8 +160,8 @@ export default class Home extends React.Component {
 
               {this.state.user && this.state.user.youtubeid ? (
                 <>
-                <h4>YouTube Link</h4>
-                <p><a href={'https://www.youtube.com/channel/'+ this.state.user.youtubeid}>https://www.youtube.com/channel/{this.state.user.youtubeid}</a>
+                <h4>YouTube Channel</h4>
+                <p><a href={'https://www.youtube.com/channel/'+ this.state.user.youtubeid}>Link:   https://www.youtube.com/channel/{this.state.user.youtubeid}</a>
                 </p>
                 <div className="blog-postsrow" data-type="row">
                   {videoElements}

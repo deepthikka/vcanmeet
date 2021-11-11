@@ -132,8 +132,7 @@ export default class Home extends React.Component {
                 {categoryElements}
             </div>
             <div className="blog-textcol"> 
-                {/* Deepthi - Redirect on click to All Category page */}
-                <a className="button blue" data-attr-shortcode="href:one_page_express_blog_link" href="#">SEE ALL CATEGORIES</a> 
+                <a className="button blue" data-attr-shortcode="href:one_page_express_blog_link" href="/categoryList">SEE ALL CATEGORIES</a> 
               </div> 
           </div>
         </div>    

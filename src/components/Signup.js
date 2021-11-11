@@ -94,8 +94,7 @@ export default class Signup extends React.Component {
     return(
       <div id="signupform">
           <OtherMethods />
-          <AmplifySignUp headerText="Signup for an Account" slot="sign-up"
-          hideSignIn
+          <AmplifySignUp headerText="Signup for an Account" slot="sign-up" hideSignIn
           formFields={[
             { type: "name",
               label: "Name",
@@ -115,6 +114,10 @@ export default class Signup extends React.Component {
             }
             ]}
           >
+          <div slot="secondary-footer-content">
+            <span>Have an account? <a href="/login">Log In</a>
+            </span>
+          </div>
           </AmplifySignUp>
       </div>
     )

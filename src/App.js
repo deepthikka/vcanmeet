@@ -19,6 +19,8 @@ import Profile from './components/Profile';
 import UpdateProfile from './components/UpdateProfile';
 import CreateEvent from './components/CreateEvent';
 import Event from './components/Event';
+import EventList from './components/EventList';
+import CategoryList from './components/CategoryList';
 
 import 'react-notifications/lib/notifications.css';
 
@@ -213,13 +215,15 @@ function App() {
       }
       <Route exact path="/createEvent" component={CreateEvent}/>
       <Route exact path="/event/:id" component={Event}/>
+      <Route exact path="/eventList/" component={EventList}/>
+      <Route exact path="/categoryList/" component={CategoryList}/>
     </Switch>
     </body>
     <div className="footer">
       <div className="gridContainer">
         <div className="row">
           <p className="footer-copyright">
-            &copy;&nbsp;&nbsp;2021&nbsp;VcanMeet v0.2&nbsp;Contact : info@vcanmeet.com</p>
+            &copy;&nbsp;&nbsp;2021&nbsp;VcanMeet v0.3&nbsp;Contact : info@vcanmeet.com</p>
         </div>
       </div>
     </div>

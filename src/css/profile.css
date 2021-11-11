@@ -211,6 +211,23 @@
     cursor: pointer;
   }
 
+  
+  .profileblock {
+    width: 150px;
+    height: 150px;
+    display: flex;
+    overflow: hidden;
+    border-radius: 50%;
+    text-align: center;
+    background: #49afa8;
+  }
+
+  .nameblock {
+    font-size: 14px;
+    font-weight: bold;
+    padding-left: 2em;
+  }
+
   .eventImg {
     width: 400px;
     height: 200px;
@@ -227,4 +244,27 @@
     width: 1280px !important;
     height: 520px !important;
     margin: 0 auto !important;
+  }
+
+  .col1
+  {
+    width: 25%;
+    font-family: sans-serif;
+  }
+
+  .col2
+  {
+    width: 45%;
+    font: "Source Sans Pro";
+  }
+
+  .col3
+  {
+    width: 30%;
+  }
+
+  .sideBox {
+    width: 200px; 
+    float: left; 
+    margin: 3px;
   }

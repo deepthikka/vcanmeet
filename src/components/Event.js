@@ -18,6 +18,7 @@ export default class Home extends React.Component {
     this.setState({
       user: user
     })
+    // alert(JSON.stringify(this.state.user.userType));
 
     const data = await API.get('event','/event/view/' + user.id + '/' + this.props.match.params.id)
     if(data.error) {
@@ -27,7 +28,7 @@ export default class Home extends React.Component {
     let eventList = JSON.parse(data.body);
     if(eventList && eventList.length > 0) {
       this.setState({event: eventList[0]});
-      alert(JSON.stringify(this.state.event));
+      // alert(JSON.stringify(this.state.event));
     } else {
       NotificationManager.error('Event doesnt Exist', 'Error!');
       window.location.href = '/profile';
@@ -43,41 +44,56 @@ export default class Home extends React.Component {
             <div>
               <div class="wp-block-columns">
               <div class="wp-block-columns" style={{width:"33.33%"}}>
-                {/* <div class="wp-block-column" style="flex-basis:33.33%"> */}
                 <div class="wp-block-column"></div>
-                  <div class="wp-block-cover has-background-dim">
-                    <img class="wp-block-cover__image-background" alt="" src={this.state.event.image} />
-                    <div class="wp-block-cover__inner-container">
-                      <div class="wp-block-buttons">
-                        <div class="wp-block-button has-custom-width wp-block-button__width-100 is-style-fill">
-                          <a class="wp-block-button__link has-vivid-green-cyan-background-color has-background">
-                            <span class="has-inline-color has-white-color"><strong>Book Now</strong></span>
-                          </a>
-                        </div>
+                <div class="wp-block-cover has-background-dim">
+                  <img class="wp-block-cover__image-background" alt="" src={this.state.event.image} />
+                  <div class="wp-block-cover__inner-container">
+                    <div class="wp-block-buttons">
+                      <div class="wp-block-button has-custom-width wp-block-button__width-100 is-style-fill">
+                        <a class="wp-block-button__link has-vivid-green-cyan-background-color has-background">
+                          <span class="has-inline-color has-white-color"><strong>Book Now</strong></span>
+                        </a>
                       </div>
                     </div>
                   </div>
                 </div>
-                {/* <div class="wp-block-column is-vertically-aligned-center" style="flex-basis:66.66%"> */}
-                <div class="wp-block-column is-vertically-aligned-center" style={{width:"66.66%"}}>
+              </div>
+              <div class="wp-block-column is-vertically-aligned-center" style={{width:"66.66%"}}>
                 <p>{this.state.user.description}</p>
-
                   <hr class="wp-block-separator is-style-wide"/>
-                  <div class="wp-block-media-text alignwide has-media-on-the-right is-stacked-on-mobile">
-                    <figure class="wp-block-media-text__media">
-                      <img loading="lazy" width="1024" height="684" src="https://vcanmeet.com/wp-content/uploads/2021/10/Picture2-1024x684.png" alt="" class="wp-image-284 size-full" srcset="https://vcanmeet.com/wp-content/uploads/2021/10/Picture2-1024x684.png 1024w, https://vcanmeet.com/wp-content/uploads/2021/10/Picture2-300x200.png 300w, https://vcanmeet.com/wp-content/uploads/2021/10/Picture2-768x513.png 768w, https://vcanmeet.com/wp-content/uploads/2021/10/Picture2-1536x1026.png 1536w, https://vcanmeet.com/wp-content/uploads/2021/10/Picture2-2048x1367.png 2048w, https://vcanmeet.com/wp-content/uploads/2021/10/Picture2-1618x1080.png 1618w" sizes="(max-width: 1024px) 100vw, 1024px" />
-                    </figure><div class="wp-block-media-text__content">
-                    <p class="has-large-font-size">{this.state.event.eventName}</p>
-                    <p>{this.state.event.description}</p>
-                    <p>{this.state.event.eventDate}</p>
-                    <p>{this.state.event.startTime} - {this.state.event.duration}Hours</p>
-                    <p>{this.state.event.price}  {this.state.event.currency}</p>
+
+                  <div class="wp-block-columns">
+                    <div class="wp-block-columns" style={{width:"100%"}}>
+                      <div>
+                        <div class="wp-block-media-text__content">
+                        <p class="has-large-font-size">{this.state.event.eventName}</p>
+                        <p>{this.state.event.description}</p>
+                        <p>{this.state.event.eventDate}</p>
+                        <p>{this.state.event.startTime} - {this.state.event.duration} Minutes {this.state.event.timezone}</p>
+                        <p>{this.state.event.price}  {this.state.event.currency}</p>
+                      </div>
+                    </div>
+                    <div class="wp-block-columns is-vertically-aligned-center" style={{width:"50%"}}>
+                      <div className="row_345">
+                        <img style={{width: 40, height: 40, borderRadius: "50%"}} src="/images/review.png" />
+                        <a className="button yellow">{this.state.event.eventDate}</a>
+                      </div>
+                      <div className="row_345">
+                        <img style={{width: 40, height: 40, borderRadius: "50%"}} src="/images/review.png" />
+                        <a className="button blue">{this.state.event.eventDate}</a>
+                      </div>
+                    </div>
+                    {/* <div className="row_345">
+                        <img style={{width: 40, height: 40, borderRadius: "50%"}} src="/images/review.png" />
+                        <a className="button yellow">{this.state.event.eventDate}</a>
+                    </div> */}
                   </div>
                 </div>
                 <div class="wp-block-buttons"></div>
                 <hr class="wp-block-separator is-style-wide"/>
                 {/* <p>{this.state.event.description}</p> */}
               </div>
+
             </div>
             <hr class="wp-block-separator"/>
           </div>

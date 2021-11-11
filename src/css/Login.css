@@ -12,10 +12,10 @@ html{
 }
 
 #loginform{
-  max-width: 800px;
+  max-width: 500px;
   min-width: 300px;
-  max-height: 650px;
-  width: 34%;
+  max-height: 570px;
+  width: 460px;
   height: 40%;
   margin: 10px auto;
   background-color: #FFFFFF;
@@ -27,7 +27,7 @@ html{
     max-width: 500px;
     min-width: 300px;
     max-height: 800px;
-    width: 34%;
+    width: 460px;
     height: 40%;
     margin: 10px auto;
     background-color: #FFFFFF;
@@ -125,12 +125,12 @@ html{
 #iconGroup{
   display: flex;
   justify-content: center;
-  padding: 1rem 0;
+  padding: 0.2rem;
 }
 
-#iconGroup a{
+/* #iconGroup a{
   margin: 0 0.6rem;
-}
+} */
 
 #alternativeLogin {
     text-align: center;
@@ -138,3 +138,5 @@ html{
    /* padding-top: 2rem; */
    /* margin-top: 1.5rem; */
 }
+
+

@@ -5,7 +5,8 @@ import SelectCurrency from 'react-select-currency';
 
 import './../css/profile.css';
 import { NotificationManager } from 'react-notifications';
-import TimezonePicker from 'react-timezone-picker';
+// import { TimezonePicker } from "baseui/timezonepicker";
+import TimezonePicker from 'react-bootstrap-timezone-picker';
 
 export default class Home extends React.Component {
   constructor(props) {
@@ -27,6 +28,7 @@ export default class Home extends React.Component {
     event.userName = user.name;
     event.currency = "INR";
     event.language = "English";
+    event.timezone = "Asia/Colombo";
 
     const data = await API.get('category','/category/limit')
     if(data.error) {
@@ -56,6 +58,14 @@ export default class Home extends React.Component {
       });
     }
     reader.readAsDataURL(file);
+  }
+
+  handleTimeZoneChange = e => {
+    var event = this.state.event;
+    event.timezone = e;
+    this.setState({
+      event: event
+    });
   }
   
   handleChange = e => {
@@ -141,26 +151,35 @@ export default class Home extends React.Component {
                     </div>
                     <div className="field">
                       <label htmlFor="date">Event Date and Time</label>     
-                    </div>
-                    <div>                  
-                      <input id="eventDate" style={{width:"250px"}} type="date" onChange={this.handleChange} maxLength="50" 
-                        value={this.state.event.eventDate} min={moment().format("YYYY-MM-DD")}
-                        placeholder="Enter Event Date" required/>
-                      <input id="startTime" style={{width:"150px"}} type="time" onChange={this.handleChange} maxLength="50" 
-                        value={this.state.event.startTime} placeholder="Enter Event Start Time" required/>
+                      <div >                  
+                        <input id="eventDate" style={{width:"250px"}} type="date" onChange={this.handleChange} maxLength="50" 
+                          value={this.state.event.eventDate} min={moment().format("YYYY-MM-DD")}
+                          placeholder="Enter Event Date" required/>
+                        <input id="startTime" style={{width:"150px"}} type="time" onChange={this.handleChange} maxLength="50" 
+                          value={this.state.event.startTime} placeholder="Enter Event Start Time" required/>
+                      </div>
                     </div>
                     <div className="field">
-                      <label htmlFor="duration">Event Duration</label>
+                      <label htmlFor="timezone">Time Zone</label>     
+                      <TimezonePicker value={this.state.event.timezone} onChange={this.handleTimeZoneChange}/>
+                      {/* <TimezonePicker value={this.state.event.timezone} onChange={({ id }) => this.handleTimeZoneChange(id)}/> */}
+                    </div>
+                    <div className="field">
+                      <label htmlFor="duration">Event Duration in Minutes</label>
                       <input id="duration" type="number" onChange={this.handleChange} maxLength="50" 
                         value={this.state.event.duration} placeholder="Enter Duration" required/>          
                     </div>
                     <div className="field">
-                      <label htmlFor="price">Ticket Price</label>     
-                    </div>                    
-                    <div>
-                      <input id="price" style={{width:"250px"}}  type="number" onChange={this.handleChange} maxLength="50" 
-                        value={this.state.event.price} placeholder="Enter Price per ticket" required/>
-                      <SelectCurrency style={{width:"150px"}} id="currency" value={'INR'} onChange={this.handleChange} required/>
+                      <label htmlFor="price">Ticket Price and Currency</label>     
+                    </div>        
+                    <div>            
+                      <div className="sideBox" >
+                        <input id="price"  type="number" onChange={this.handleChange} maxLength="50" 
+                          value={this.state.event.price} placeholder="Enter Price per ticket" required/>
+                      </div>
+                      <div className="sideBox">
+                        <SelectCurrency id="currency" value={'INR'} onChange={this.handleChange} required/>
+                      </div>
                     </div>
                     <div className="field">
                       <label htmlFor="language">Language</label>
