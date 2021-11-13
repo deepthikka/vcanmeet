@@ -12,6 +12,7 @@ export default class Home extends React.Component {
   }
 
   async componentDidMount() {
+    localStorage.setItem('event', "");
     const user = JSON.parse(localStorage.getItem('user'));
     this.setState({
       user: user
@@ -38,6 +39,11 @@ export default class Home extends React.Component {
     this.setState({events: eventList});
     // alert(data.body)
   }
+
+  eventClick(event) {
+    localStorage.setItem("event", JSON.stringify(event));
+    window.location.href = '/event';
+  }
   
 
   render(){
@@ -49,7 +55,8 @@ export default class Home extends React.Component {
         </a>
         <div className="row_345">
           <h3 className="blog-title">
-            <a href={'/event/' + props.id} rel="bookmark" >{props.title}</a>
+            {/* <a href={'/event/' + props.id} rel="bookmark" >{props.title}</a> */}
+            <a rel="bookmark" onClick={() => this.eventClick(props)}>{props.title}</a>
           </h3>
           <hr className="blog-separator"></hr>
           <div className="post-header">
@@ -70,7 +77,7 @@ export default class Home extends React.Component {
         eventElements.push (
           <Event img={this.state.events[i].image} title={this.state.events[i].eventName} 
                 author={this.state.events[i].userName} date={this.state.events[i].eventDate}
-                id={this.state.events[i].eventId}/>
+                id={this.state.events[i].eventId} userId={this.state.events[i].userId}/>
         );
       }
     }

@@ -8,7 +8,8 @@ export default class Home extends React.Component {
     super(props);
     this.state = {
       user: {},
-      event: {}
+      event: {},
+      owner: true
     }
   }
 
@@ -18,9 +19,20 @@ export default class Home extends React.Component {
     this.setState({
       user: user
     })
-    // alert(JSON.stringify(this.state.user.userType));
 
-    const data = await API.get('event','/event/view/' + user.id + '/' + this.props.match.params.id)
+    const localEvent = localStorage.getItem('event');
+    if(localEvent == null || localEvent == "") {
+      NotificationManager.error('Event doesnt Exist', 'Error!');
+      window.location.href = '/profile';
+      return;
+    }
+    
+    const even = JSON.parse(localEvent);
+
+    if(even.userId !== user.id)
+    this.setState({owner: false});
+    // const data = await API.get('event','/event/view/' + user.id + '/' + this.props.match.params.id)
+    const data = await API.get('event','/event/view/' + even.userId + '/' + even.id)
     if(data.error) {
       alert(data.error)
       return;
@@ -28,6 +40,7 @@ export default class Home extends React.Component {
     let eventList = JSON.parse(data.body);
     if(eventList && eventList.length > 0) {
       this.setState({event: eventList[0]});
+      localStorage.setItem("event", JSON.stringify(eventList[0]));
       // alert(JSON.stringify(this.state.event));
     } else {
       NotificationManager.error('Event doesnt Exist', 'Error!');
@@ -39,8 +52,19 @@ export default class Home extends React.Component {
     return (
       <>
       <div id="page-content" class="page-content eventBackground">
+        <div className="gridContainer block1"> 
+          <div className="profileblock">
+            <img src={this.state.user.image} />
+          </div>
+          <div className="nameblock">
+            <h3 className="fontstyle">{this.state.user.name}</h3>  
+            <p className="descstyle">{this.state.user.description}</p>
+         </div>
+         <hr class="wp-block-separator is-style-wide"/>
+        </div>
+
         <div class="gridContainer">
-          <div id="post-274" class="post-274 page type-page status-publish has-post-thumbnail hentry">
+          <div class="page type-page status-publish has-post-thumbnail hentry">
             <div>
               <div class="wp-block-columns">
               <div class="wp-block-columns" style={{width:"33.33%"}}>
@@ -50,62 +74,78 @@ export default class Home extends React.Component {
                   <div class="wp-block-cover__inner-container">
                     <div class="wp-block-buttons">
                       <div class="wp-block-button has-custom-width wp-block-button__width-100 is-style-fill">
-                        <a class="wp-block-button__link has-vivid-green-cyan-background-color has-background">
-                          <span class="has-inline-color has-white-color"><strong>Book Now</strong></span>
-                        </a>
+                        { this.state.owner?
+                          <a href="/createEvent" class="wp-block-button__link has-vivid-green-cyan-background-color has-background">
+                            <span class="has-inline-color has-white-color"><strong>Edit Event</strong></span>
+                          </a>
+                          :
+                          <a class="wp-block-button__link has-vivid-green-cyan-background-color has-background">
+                            <span class="has-inline-color has-white-color"><strong>Book Now</strong></span>
+                          </a>
+                        }
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
               <div class="wp-block-column is-vertically-aligned-center" style={{width:"66.66%"}}>
-                <p>{this.state.user.description}</p>
-                  <hr class="wp-block-separator is-style-wide"/>
-
+              <p class="has-large-font-size">{this.state.event.eventName}</p>
+                <hr class="wp-block-separator"/>
                   <div class="wp-block-columns">
-                    <div class="wp-block-columns" style={{width:"100%"}}>
-                      <div>
-                        <div class="wp-block-media-text__content">
-                        <p class="has-large-font-size">{this.state.event.eventName}</p>
+                    <div style={{width:"400px"}}>
+                      <div class="wp-block-media-text__content">
                         <p>{this.state.event.description}</p>
-                        <p>{this.state.event.eventDate}</p>
-                        <p>{this.state.event.startTime} - {this.state.event.duration} Minutes {this.state.event.timezone}</p>
-                        <p>{this.state.event.price}  {this.state.event.currency}</p>
                       </div>
                     </div>
-                    <div class="wp-block-columns is-vertically-aligned-center" style={{width:"50%"}}>
-                      <div className="row_345">
-                        <img style={{width: 40, height: 40, borderRadius: "50%"}} src="/images/review.png" />
-                        <a className="button yellow">{this.state.event.eventDate}</a>
-                      </div>
-                      <div className="row_345">
-                        <img style={{width: 40, height: 40, borderRadius: "50%"}} src="/images/review.png" />
-                        <a className="button blue">{this.state.event.eventDate}</a>
-                      </div>
+                    <div class="wp-block-columns eventBox">
+                      <div className="eventDisplay">
+                        <div>
+                          <img style={{width: 50, height: 50}} src="/images/calendar.png" />
+                          <a className="button blue" style={{width: 200, height: 50}}>
+                              {this.state.event.eventDate}
+                          </a>
+                        </div>
+                      </div>   
+                      <div className="eventDisplay">
+                        <div>
+                          <img style={{width: 50, height: 50}} src="/images/time.png" />
+                          <a className="button purple" style={{width: 200, height: 50}}>
+                            {this.state.event.startTime} - {this.state.event.duration} Minutes
+                          </a>
+                        </div>
+                      </div>   
+                      <div className="eventDisplay">
+                        <div>
+                          <img style={{width: 50, height: 50}} src="/images/timezone.png" />
+                          <a className="button yellow" style={{width: 200, height: 50}}>
+                              {this.state.event.timezone}
+                          </a>
+                        </div>
+                      </div>  
+                      <div className="eventDisplay">
+                        <div>
+                          <img style={{width: 50, height: 50}} src="/images/ticket.png" />
+                          <a className="button green" style={{width: 200, height: 50}}>
+                            {this.state.event.price}  {this.state.event.currency}
+                          </a>
+                        </div>
+                      </div>   
                     </div>
-                    {/* <div className="row_345">
-                        <img style={{width: 40, height: 40, borderRadius: "50%"}} src="/images/review.png" />
-                        <a className="button yellow">{this.state.event.eventDate}</a>
-                    </div> */}
                   </div>
-                </div>
-                <div class="wp-block-buttons"></div>
-                <hr class="wp-block-separator is-style-wide"/>
-                {/* <p>{this.state.event.description}</p> */}
+                  <hr class="wp-block-separator"/>
               </div>
-
             </div>
             <hr class="wp-block-separator"/>
           </div>
     
-          <div class="post-comments">
+          {/* <div class="post-comments">
 	        <div class="comments-form">
               <div class="comment-form">
-     		    <div id="respond" class="comment-respond">
+     		    <div id="respond" class="comment-respond"> */}
 		            {/* <h3 id="reply-title" class="comment-reply-title">Leave a Reply <small>
                         <a rel="nofollow" id="cancel-comment-reply-link" href="/indian-cook-show/#respond" style="display:none;">Cancel reply</a>
                         </small></h3> */}
-                    <h3 id="reply-title" class="comment-reply-title">Leave a Reply</h3>
+                    {/* <h3 id="reply-title" class="comment-reply-title">Leave a Reply</h3>
                     <form action="https://vcanmeet.com/wp-comments-post.php" method="post" id="commentform" class="comment-form">
                       <p class="comment-notes"><span id="email-notes">Your email address will not be published.</span> Required fields are marked <span class="required">*</span></p>
                       <p class="comment-form-comment">
@@ -130,7 +170,7 @@ export default class Home extends React.Component {
                 </div>
 	          </div>
             </div>
-          </div>
+          </div> */}
         </div>  
       </div>
       </div>

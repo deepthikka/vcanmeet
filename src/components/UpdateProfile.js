@@ -15,7 +15,13 @@ export default class Home extends React.Component {
 
   componentDidMount() {
     let user = JSON.parse(localStorage.getItem('user'));
-    let updatedUser = JSON.parse(localStorage.getItem('profile'));
+    let profile = localStorage.getItem('profile');
+    let updatedUser = {};
+    if(profile == null || profile == "")
+      updatedUser = {};
+    else 
+      updatedUser = JSON.parse(localStorage.getItem('profile'));
+      
     this.setState({
       user: user,
       updatedUser: updatedUser

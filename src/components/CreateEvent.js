@@ -23,12 +23,18 @@ export default class Home extends React.Component {
     this.setState({
       user: user
     })
+
     let event = {};
-    event.userId = user.id;
-    event.userName = user.name;
-    event.currency = "INR";
-    event.language = "English";
-    event.timezone = "Asia/Colombo";
+    const localEvent = localStorage.getItem('event');
+    if(localEvent == null || localEvent == "") {
+      event.userId = user.id;
+      event.userName = user.name;
+      event.currency = "INR";
+      event.language = "English";
+      event.timezone = "Asia/Colombo";
+    } else {
+      event = JSON.parse(localEvent);
+    }
 
     const data = await API.get('category','/category/limit')
     if(data.error) {

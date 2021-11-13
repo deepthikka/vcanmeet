@@ -7,31 +7,14 @@ export default class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      events: [
-        {
-          img : "/images/horoscope.png",
-          title : "Horoscope Reading",
-          author:"Suvetha",
-          date:"September 18, 2021"
-        },
-        {
-          img : "/images/Tarot.png",
-          title : "Tarot Card Reading",
-          author:"Suvetha",
-          date:"September 18, 2021"
-        },
-        {
-          img : "/images/dancing.jpg",
-          title : "Dancing Class",
-          author:"Suvetha",
-          date:"September 18, 2021"
-        },
-      ],
+      events: [],
       categories: []
     }
   }
 
   async componentDidMount() {
+    localStorage.setItem('event', "");
+
     const data = await API.get('category','/category/limit')
     if(data.error) {
       alert(data.error)
@@ -39,6 +22,19 @@ export default class Home extends React.Component {
     }
     let cat = JSON.parse(data.body);
     this.setState({categories: cat});
+
+    const data1 = await API.get('event','/event')
+    if(data1.error) {
+      alert(data1.error)
+      return;
+    }
+    let eventList = JSON.parse(data1.body);
+    this.setState({events: eventList});
+  }
+
+  eventClick(event) {
+    localStorage.setItem("event", JSON.stringify(event));
+    window.location.href = '/event';
   }
   
   render(){
@@ -51,7 +47,7 @@ export default class Home extends React.Component {
         </a>
         <div className="row_345">
           <h3 className="blog-title">
-            <a rel="bookmark">{props.title}</a>
+            <a rel="bookmark" onClick={() => this.eventClick(props)}>{props.title}</a>
           </h3>
           <hr className="blog-separator"></hr>
           <div className="post-header">
@@ -109,10 +105,14 @@ export default class Home extends React.Component {
 
     var eventElements = [];
     if(this.state.events) {
-      for(var i=0; i<this.state.events.length; i++) {
+      let length = 3;
+      if(this.state.events.length < 3)
+        length = this.state.events.length;
+      for(var i=0; i<length; i++) {
         eventElements.push (
-          <Event img={this.state.events[i].img} title={this.state.events[i].title} 
-                author={this.state.events[i].author} date={this.state.events[i].date}/>
+          <Event img={this.state.events[i].image} title={this.state.events[i].eventName} 
+          author={this.state.events[i].userName} date={this.state.events[i].eventDate}
+          id={this.state.events[i].eventId} userId={this.state.events[i].userId}/>
         );
       }
     }
@@ -121,7 +121,7 @@ export default class Home extends React.Component {
       <>
       <div className="content">
       <div className="page-content">
-        <div data-label="Portfolio" data-id="portfolio-cards-section" data-category="portfolio" className="portfolio-cards-section" id="portfolio-1" style={{backgroundColor: "rgb(246, 246, 246)"}}> 
+        <div data-label="Portfolio" style={{backgroundColor: "#ffffff"}}  data-id="portfolio-cards-section" data-category="portfolio" className="portfolio-cards-section" id="portfolio-1" style={{backgroundColor: "rgb(246, 246, 246)"}}> 
             <div className="gridContainer"> 
               <div className="blog-textrow"> 
                 <div className="blog-textcol dynamic-color" data-type="column"> 
@@ -150,7 +150,7 @@ export default class Home extends React.Component {
             </div> 
             <div className="blog-textcol"> 
               {/* Deepthi - Redirect on click to All Events page */}
-              <a className="button blue" data-attr-shortcode="href:one_page_express_blog_link" href="#">SEE ALL EVENTS</a> 
+              <a className="button blue" data-attr-shortcode="href:one_page_express_blog_link" href="/eventList">SEE ALL EVENTS</a> 
             </div> 
           </div>
         </div>

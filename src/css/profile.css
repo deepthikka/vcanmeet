@@ -268,3 +268,13 @@
     float: left; 
     margin: 3px;
   }
+
+  .eventBox {
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .eventDisplay {
+    justify-content: right;
+    align-items: left;
+  }
