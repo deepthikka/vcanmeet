@@ -8,7 +8,7 @@ export default class Home extends React.Component {
       user: {},
       events: [],
       videos: [],
-      isInfluencer: false,
+      isFollower: true,
       isOwnProfile: false
     }
   }
@@ -16,6 +16,7 @@ export default class Home extends React.Component {
   async componentDidMount() {
     localStorage.setItem('event', "");
     const user = JSON.parse(localStorage.getItem('user'));
+
     let profileUser = {};
 
     if (this.props.match.params.userId && this.props.match.params.userId !== user.userId) {
@@ -35,11 +36,14 @@ export default class Home extends React.Component {
     this.setState({
       user: profileUser
     })
-    //alert(JSON.stringify(user))
-    if(profileUser.userType === "Influencer")
-      this.setState({isInfluencer : true});
-    else
-      this.setState({isInfluencer : false});
+    let isFollower = true;
+    if(profileUser.userType === "Influencer") {
+      this.setState({isFollower : false});
+      isFollower = false;
+    } else {
+      this.setState({isFollower : true});
+    }
+
     if(profileUser.youtubeid) {
       
       const currentChannelId = profileUser.youtubeid;
@@ -52,7 +56,14 @@ export default class Home extends React.Component {
       })
     }
 
-    const data = await API.get('event','/event/' + profileUser.id)
+    let url = "";
+    if(isFollower) {
+      url = '/event'; 
+    } else {
+      url = '/event/' + profileUser.id;
+    }
+
+    const data = await API.get('event',url)
     if(data.error) {
       alert(data.error)
       return;
@@ -127,52 +138,6 @@ export default class Home extends React.Component {
       }
     }
 
-    const profileOptions = props => (
-      <>
-      <div className="blog-postcol cp3cols">
-        <div>
-          <div className="row_345">
-            <img style={{ width: 80, height: 80, borderRadius: "50%" }} src="/images/profile.png" />
-            <a className="button blue small" href="/updateProfile">
-              <span>Edit Profile</span>
-            </a>
-          </div>
-        </div>
-      </div><div className="blog-postcol cp3cols">
-          <div>
-            <div className="row_345">
-              <img style={{ width: 80, height: 80, borderRadius: "50%" }} src="/images/event.png" />
-              <a className="button green small" href="/createEvent">
-                <span title="Become an Influencer to Create Event" disabled={!this.state.isInfluencer}>
-                  Create Event </span>
-              </a>
-            </div>
-          </div>
-        </div><div className="blog-postcol cp3cols">
-          <div>
-            <div className="row_345">
-              <img style={{ width: 80, height: 80, borderRadius: "50%" }} src="/images/review.png" />
-              <a className="button yellow small">
-                <span title="Become an Influencer to View Reviews">
-                  View Reviews</span>
-              </a>
-            </div>
-          </div>
-        </div><div className="blog-postcol cp3cols">
-          <div>
-            <div className="row_345">
-              <img style={{ width: 80, height: 80, borderRadius: "50%" }} src="/images/security2.png" />
-              <a className="button purple small">
-                <span title="Become an Influencer for Payment Setup">
-                  Payment Setup</span>
-              </a>
-            </div>
-          </div>
-        </div><hr className="wp-block-separator is-style-wide" />
-        </>
-
-    );
-
     return (
       <>
       <div className="content">
@@ -207,37 +172,40 @@ export default class Home extends React.Component {
                       </a>
                     </div>
                   </div>
-                </div><div className="blog-postcol cp3cols">
+                </div>
+                <div className="blog-postcol cp3cols" disabled={this.state.isFollower} 
+                        data-text="Become an Influencer to Create Event">
                     <div>
                       <div className="row_345">
                         <img style={{ width: 80, height: 80, borderRadius: "50%" }} src="/images/event.png" />
                         <a className="button green small" href="/createEvent">
-                          <span title="Become an Influencer to Create Event" disabled={!this.state.isInfluencer}>
-                            Create Event </span>
+                          <span >Create Event </span>
                         </a>
                       </div>
                     </div>
-                  </div><div className="blog-postcol cp3cols">
+                  </div><div className="blog-postcol cp3cols" disabled={this.state.isFollower}
+                        data-text="Become an Influencer to View Reviews">
                     <div>
                       <div className="row_345">
                         <img style={{ width: 80, height: 80, borderRadius: "50%" }} src="/images/review.png" />
                         <a className="button yellow small">
-                          <span title="Become an Influencer to View Reviews">
-                            View Reviews</span>
+                          <span>View Reviews</span>
                         </a>
                       </div>
                     </div>
-                  </div><div className="blog-postcol cp3cols">
+                  </div>
+                  <div className="blog-postcol cp3cols" disabled={this.state.isFollower}
+                        data-text="Become an Influencer for Payment Setup">
                     <div>
                       <div className="row_345">
                         <img style={{ width: 80, height: 80, borderRadius: "50%" }} src="/images/security2.png" />
                         <a className="button purple small">
-                          <span title="Become an Influencer for Payment Setup">
-                            Payment Setup</span>
+                          <span>Payment Setup</span>
                         </a>
                       </div>
                     </div>
-                  </div><hr className="wp-block-separator is-style-wide" />
+                  </div>
+                  <hr className="wp-block-separator is-style-wide" />
                 </>
                 ) : 
               <h4></h4>
@@ -262,7 +230,10 @@ export default class Home extends React.Component {
           <div className="gridContainer"> 
             <div className="blog-textrow"> 
               <div className="blog-textcol dynamic-color" data-type="column"> 
-                <h3 className="fontstyle">Latest Events</h3> 
+                {this.state.isFollower ?
+                  <h3 className="fontstyle">Upcoming Events</h3> 
+                 : <h3 className="fontstyle">Latest Events</h3> 
+                }
               </div> 
             </div> 
             <div className="blog-postsrow dark-text" data-type="row" data-dynamic-columns="one_page_express_latest_news_columns" data-content-shortcode="one_page_express_latest_news">            
