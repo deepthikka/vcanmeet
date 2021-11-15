@@ -29,6 +29,7 @@ export default class Signup extends React.Component {
     user.image = googleUser.getBasicProfile().getImageUrl();
 
     NotificationManager.success('Login Successful!! Loading Profile', 'Successful!', 10000);
+    alert(user.id)
     const data1 = await API.get('user','/user/'+user.id);
 
     if(data1.error) {
@@ -38,7 +39,6 @@ export default class Signup extends React.Component {
     if(data1.body) {
       let profile = JSON.parse(data1.body);
       localStorage.setItem('profile', JSON.stringify(profile));
-      user.firstLogin = false;
       if(profile.name)
         user.name = profile.name;
 
@@ -49,16 +49,10 @@ export default class Signup extends React.Component {
       user.description = profile.description;
       user.youtubeid = profile.youtubeid;
       user.instagramid = profile.instagramid;    
-    } else {
-      user.firstLogin = true;
-      user.userType = "Follower";
-      user.description = "";
-      user.youtubeid = "";
-      user.instagramid = ""; 
     }
 
     localStorage.setItem('user', JSON.stringify(user));
-    window.location.reload(false);
+    window.location.href = '/profile';
   }
 
   onFailure(error) {

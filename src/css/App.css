@@ -24,6 +24,11 @@
   color: white;
 }
 
+.notification-container {
+  align-items: center;
+  left: 40%;
+}
+
 .block1 {
   font-family: sans-serif;
   list-style-type: none;

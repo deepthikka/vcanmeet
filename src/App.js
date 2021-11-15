@@ -44,7 +44,6 @@ function App() {
             if(response.body) {
               let profile = JSON.parse(response.body);
               localStorage.setItem('profile', JSON.stringify(profile));
-              user.firstLogin = false;
               if(profile.name)
                 user.name = profile.name;
         
@@ -55,14 +54,7 @@ function App() {
               user.description = profile.description;
               user.youtubeid = profile.youtubeid;
               user.instagramid = profile.instagramid;    
-            } else {
-              user.firstLogin = true;
-              user.userType = "Follower";
-              user.description = "";
-              user.youtubeid = "";
-              user.instagramid = ""; 
-              user.image = "";
-            }                  
+            }                 
 
             localStorage.setItem('user', JSON.stringify(user));
             window.location.reload(false);
@@ -109,7 +101,7 @@ function App() {
           refreshPage();
           break;
         case 'signUp_failure':
-          NotificationManager.error('Signup Failed! ' + data.message, 'Error!');
+          NotificationManager.error('Signup Failed! ' + data.message, 'Error!', 2000);
           break;
         case 'signIn_failure':
         case 'cognitoHostedUI_failure':
@@ -128,7 +120,7 @@ function App() {
   async function logout() {
     Auth.signOut()
       .then(() => {
-        NotificationManager.success('Succesfully Logged out!', 'Successful!', 2000);
+        NotificationManager.success('Succesfully Logged out!', 'Successful!', 1000);
       })
       .catch(err => {
         NotificationManager.error('Error : ' + err, 'Error!');
@@ -201,21 +193,20 @@ function App() {
       :
       <Route exact path="/login" component={Login} />
       }
-      {/* {(localStorage.getItem('user') && (JSON.parse(localStorage.getItem('user')).firstLogin) == false) ?
-      <Route exact path="/profile" component={Profile} />
-      : <Redirect from="/profile" to="/updateProfile" />
-      } */}
       {localStorage.getItem('user') ?
       <Route exact path="/profile" component={Profile} />
       : <Redirect from="/profile" to="/login" />
       }      
+      <Route exact path="/profile/:userId" component={Profile}/>
       {localStorage.getItem('user') ?
       <Route exact path="/updateProfile" component={UpdateProfile} />
       : <Redirect from="/updateProfile" to="/login" />
       }
       <Route exact path="/createEvent" component={CreateEvent}/>
       <Route exact path="/event" component={Event}/>
-      <Route exact path="/eventList/" component={EventList}/>
+      <Route exact path="/eventList" component={EventList}/>
+      <Route exact path="/eventList/:user" component={EventList}/>
+      <Route exact path="/eventList/category/:category" component={EventList}/>
       <Route exact path="/categoryList/" component={CategoryList}/>
     </Switch>
     </body>
@@ -223,7 +214,7 @@ function App() {
       <div className="gridContainer">
         <div className="row">
           <p className="footer-copyright">
-            &copy;&nbsp;&nbsp;2021&nbsp;VcanMeet v0.3&nbsp;Contact : info@vcanmeet.com</p>
+            &copy;&nbsp;&nbsp;2021&nbsp;VcanMeet v0.4&nbsp;Contact : info@vcanmeet.com</p>
         </div>
       </div>
     </div>

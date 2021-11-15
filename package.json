@@ -18,6 +18,7 @@
     "react-router-dom": "^5.3.0",
     "react-scripts": "4.0.3",
     "react-select-currency": "^1.0.7",
+    "react-toastify": "^8.1.0",
     "styletron-react": "^5.2.4",
     "web-vitals": "^1.1.2"
   },

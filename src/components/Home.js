@@ -1,8 +1,6 @@
 import React from 'react';
 import { API } from 'aws-amplify';
 
-const eventMap = [0, 1, 2];
-
 export default class Home extends React.Component {
   constructor(props) {
     super(props);
@@ -40,26 +38,25 @@ export default class Home extends React.Component {
   render(){
 
     const Event = props => (
-    <div className="blog-postcol cp4cols">
-      <div className="post-content">
-        <a >
-          <img className="eventImg" src={props.img} />
-        </a>
-        <div className="row_345">
-          <h3 className="blog-title">
-            <a rel="bookmark" onClick={() => this.eventClick(props)}>{props.title}</a>
-          </h3>
-          <hr className="blog-separator"></hr>
-          <div className="post-header">
-              <i className="font-icon-post fa fa-user"></i>
-              {/* Deepthi - On click author name redirect to Author profile */}
-              <a href="#" rel="author">{props.author}</a>    
-              <i className="font-icon-post fa fa-calendar"></i>
-              <span className="span12">{props.date}</span>
+      <div className="blog-postcol cp4cols">
+        <div className="post-content">
+          <a >
+            <img className="eventImg" src={props.img} />
+          </a>
+          <div className="row_345">
+            <h3 className="blog-title">
+              <a rel="bookmark" onClick={() => this.eventClick(props)}>{props.title}</a>
+            </h3>
+            <hr className="blog-separator"></hr>
+            <div className="post-header">
+                <i className="font-icon-post fa fa-user"></i>
+                <a href={'/profile/' + props.userId} rel="author">{props.author}</a>    
+                <i className="font-icon-post fa fa-calendar"></i>
+                <span className="span12">{props.date}</span>
+            </div>
           </div>
         </div>
-      </div>
-    </div>      
+      </div>      
     );
 
     const Category = props => (
@@ -81,7 +78,7 @@ export default class Home extends React.Component {
           </div> 
           <div className="portfolio-cards-projectinfo"> 
             <div className="portfolio-cards-projnamecol" data-type="column"> 
-              <a href="#" className="portfolio-cards-projlink" target="_self" rel="noopener">
+              <a href={'/eventList/category/' + props.name} className="portfolio-cards-projlink" target="_self" rel="noopener">
                 <h4 className="portfolio-cards-projtitle">{props.title}</h4>
               </a> 
             </div> 
@@ -98,7 +95,8 @@ export default class Home extends React.Component {
 
       for(var i=0; i<length; i++) {
         categoryElements.push (
-          <Category img={this.state.categories[i].Image} title ={this.state.categories[i].Title}/>
+          <Category img={this.state.categories[i].Image} title ={this.state.categories[i].Title}
+                    name={this.state.categories[i].Name}/>
         );
       }
     }
@@ -149,7 +147,6 @@ export default class Home extends React.Component {
               {eventElements}
             </div> 
             <div className="blog-textcol"> 
-              {/* Deepthi - Redirect on click to All Events page */}
               <a className="button blue" data-attr-shortcode="href:one_page_express_blog_link" href="/eventList">SEE ALL EVENTS</a> 
             </div> 
           </div>

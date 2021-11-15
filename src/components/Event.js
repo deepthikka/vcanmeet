@@ -16,22 +16,35 @@ export default class Home extends React.Component {
   async componentDidMount() {
     // alert(this.props.match.params.id);
     const user = JSON.parse(localStorage.getItem('user'));
-    this.setState({
-      user: user
-    })
+    let eventOwner = {};
 
     const localEvent = localStorage.getItem('event');
     if(localEvent == null || localEvent == "") {
-      NotificationManager.error('Event doesnt Exist', 'Error!');
-      window.location.href = '/profile';
+      NotificationManager.error('Event does not Exist', 'Error!');
+      window.location.href = '/home';
       return;
     }
     
     const even = JSON.parse(localEvent);
 
-    if(even.userId !== user.id)
-    this.setState({owner: false});
-    // const data = await API.get('event','/event/view/' + user.id + '/' + this.props.match.params.id)
+    if(even.userId !== user.id) {
+      this.setState({owner: false});
+      const data1 = await API.get('user','/user/'+ even.userId);
+
+      if(data1.error) {
+        alert(data1.error)
+      }
+      if(data1.body) {
+        eventOwner = JSON.parse(data1.body);
+      }
+    } else {
+      eventOwner = user;
+    }
+
+    this.setState({
+      user: eventOwner
+    })
+
     const data = await API.get('event','/event/view/' + even.userId + '/' + even.id)
     if(data.error) {
       alert(data.error)
@@ -43,7 +56,7 @@ export default class Home extends React.Component {
       localStorage.setItem("event", JSON.stringify(eventList[0]));
       // alert(JSON.stringify(this.state.event));
     } else {
-      NotificationManager.error('Event doesnt Exist', 'Error!');
+      NotificationManager.error('Event does not Exist', 'Error!', 2000);
       window.location.href = '/profile';
     }
   }
@@ -110,7 +123,7 @@ export default class Home extends React.Component {
                         <div>
                           <img style={{width: 50, height: 50}} src="/images/time.png" />
                           <a className="button purple" style={{width: 200, height: 50}}>
-                            {this.state.event.startTime} - {this.state.event.duration} Minutes
+                            {this.state.event.startTime} - {this.state.event.eventDuration} Minutes
                           </a>
                         </div>
                       </div>   
@@ -118,7 +131,7 @@ export default class Home extends React.Component {
                         <div>
                           <img style={{width: 50, height: 50}} src="/images/timezone.png" />
                           <a className="button yellow" style={{width: 200, height: 50}}>
-                              {this.state.event.timezone}
+                              {this.state.event.timeZone}
                           </a>
                         </div>
                       </div>  

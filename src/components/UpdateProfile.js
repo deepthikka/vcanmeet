@@ -17,8 +17,10 @@ export default class Home extends React.Component {
     let user = JSON.parse(localStorage.getItem('user'));
     let profile = localStorage.getItem('profile');
     let updatedUser = {};
-    if(profile == null || profile == "")
-      updatedUser = {};
+    if(profile == null || profile == "") {
+      updatedUser = user;
+      updatedUser.userType = "Follower";
+    }
     else 
       updatedUser = JSON.parse(localStorage.getItem('profile'));
       
@@ -71,18 +73,16 @@ export default class Home extends React.Component {
       alert("No change in Profile data")
     else {
       updatedUser.id = this.state.user.id;
-      if(this.state.user.firstLogin)
-        updatedUser.userType = "Influencer";
 
       let input = {body : updatedUser}
       API.put('user', '/user', input)
       .then(response => {
         //alert(JSON.stringify(response))
-        NotificationManager.success('Profile Successfully Updated', 'Successful!', 1000);
-        this.state.user.firstLogin = false;
+        NotificationManager.success('Profile Successfully Updated', 'Successful!', 2000);
         localStorage.setItem('user', JSON.stringify(this.state.user));
         localStorage.setItem('profile', JSON.stringify(this.state.updatedUser));
-        window.location.href = '/profile';
+        setTimeout(() => {  window.location.href = '/profile';}, 2000);
+        
       })
       .catch(error => {
         // NotificationManager.error(error, 'Error!');
@@ -112,6 +112,14 @@ export default class Home extends React.Component {
                       <label htmlFor="name">Name</label>
                       <input id="name" type="text" onChange={this.handleChange} maxLength="50" 
                         value={this.state.user.name} placeholder="Enter Full Name" required/>
+                    </div>
+                    <div className="field">
+                      <label htmlFor="userType">User Type</label>
+                      <select id="userType" value={this.state.user.userType} onChange={this.handleChange}
+                        placeholder="Select user type" required>
+                        <option selected value="Follower">Follower</option>
+                        <option value="Influencer">Influencer</option>
+                      </select>
                     </div>
                     <div className="field">
                       <label htmlFor="description">Description</label>

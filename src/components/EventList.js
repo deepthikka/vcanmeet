@@ -1,37 +1,53 @@
 import React from 'react';
+import { API } from 'aws-amplify';
+import {NotificationManager} from 'react-notifications';
 
 export default class Home extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-          eventList: [
-            {
-              img : "https://vcanmeet.com/wp-content/uploads/2021/11/yin-yoga-training-course.jpg",
-              title : "Horoscope Reading",
-              date: "Wed 17th Nov 21",
-              time: "11:30",
-              zone: "GST",
-              duration: "30",
-              description: "This is Yoga class for beginners and Lisa will teach basic Yogasana’s. Bring: Yoga mat and water bottle"
-            },
-            {
-              img : "/images/Tarot.png",
-              title : "Tarot Card Reading",
-              author:"Suvetha",
-              date:"September 18, 2021"
-            },
-            {
-              img : "/images/dancing.jpg",
-              title : "Dancing Class",
-              author:"Suvetha",
-              date:"September 18, 2021"
-            },
-          ]
+          eventList: []
         }
       };
 
   async componentDidMount() {
+
+    let data = {};
+    localStorage.setItem("event", "");
+
+    if (this.props.match.params.category) {
+      data = await API.get('event','/event/category/' +  this.props.match.params.category)
+      if(data.error) {
+        alert(data.error)
+        return;
+      }
+    } else if (this.props.match.params.user) {
+      data = await API.get('event','/event/' +  this.props.match.params.user)
+      if(data.error) {
+        alert(data.error)
+        return;
+      }
+    } else if (this.props.match.params.keyword) {
+
+    } else {
+      data = await API.get('event','/event')
+      if(data.error) {
+        alert(data.error)
+        return;
+      }
+    }
+    let eventList = JSON.parse(data.body);
+    if(eventList.length == 0) {
+      NotificationManager.error('No Events matched this Search. Please try again', 'Error!', 2000);
+      // window.location.href = '/';
+    }
+    this.setState({eventList: eventList});
+  }
+
+  eventClick(event) {
+    localStorage.setItem("event", JSON.stringify(event));
+    window.location.href = '/event';
   }
 
   render(){
@@ -42,19 +58,21 @@ export default class Home extends React.Component {
           <div class="wp-block-columns col1">
             <div class="wp-block-column">
               <p></p>
-              <p>{props.date}</p>
-              <p>{props.time} {props.zone}</p>
-              <p>Duration : {props.duration} min</p>
+              <p>{props.eventDate}</p>
+              <p>{props.startTime} {props.timeZone}</p>
+              <p>Duration : {props.eventDuration} min</p>
               <div class="wp-block-buttons">
                 <div class="wp-block-button is-style-fill">
-                  <a class="wp-block-button__link has-black-color has-vivid-green-cyan-background-color has-text-color has-background">View</a>
+                  <a class="wp-block-button__link has-black-color has-vivid-green-cyan-background-color has-text-color has-background"
+                    onClick={() => this.eventClick(props)} >View
+                  </a>
                 </div>
               </div>
             </div>
           </div>
           <div class="wp-block-columns col2">
             <div class="wp-block-column">
-              <h4><strong>{props.title}</strong></h4>
+              <h4><strong>{props.eventName}</strong></h4>
               <p>{props.description} </p>
             </div>
           </div>
@@ -62,9 +80,9 @@ export default class Home extends React.Component {
             <div class="wp-block-column">
               <p></p>
               <div class="wp-block-image is-style-rounded">
-                <figure class="aligncenter size-full">
-                  <img loading="lazy" width="600" height="400"
-                    src={props.img} alt="" class="wp-image-294" sizes="(max-width: 600px) 100vw, 600px" />
+                <figure class="aligncenter">
+                  <img loading="lazy" width="600px" height="200px"
+                    src={props.image} alt="" />
                 </figure>
               </div>  
             </div>
@@ -78,10 +96,11 @@ export default class Home extends React.Component {
     if(this.state.eventList) {
       for(var i=0; i<this.state.eventList.length; i++) {
         eventElements.push (
-          <Event img={this.state.eventList[i].img} title={this.state.eventList[i].title} 
-                date={this.state.eventList[i].date} time={this.state.eventList[i].time} 
-                duration={this.state.eventList[i].duration} zone={this.state.eventList[i].zone}
-                description={this.state.eventList[i].description}/>
+          <Event image={this.state.eventList[i].image} eventName={this.state.eventList[i].eventName} 
+                eventDate={this.state.eventList[i].eventDate} startTime={this.state.eventList[i].startTime} 
+                eventDuration={this.state.eventList[i].eventDuration} timeZone={this.state.eventList[i].timeZone}
+                description={this.state.eventList[i].description} 
+                id={this.state.eventList[i].eventId} userId={this.state.eventList[i].userId}/>
         );
       }
     }

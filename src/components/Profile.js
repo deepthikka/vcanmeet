@@ -7,20 +7,42 @@ export default class Home extends React.Component {
     this.state = {
       user: {},
       events: [],
-      videos: []
+      videos: [],
+      isInfluencer: false,
+      isOwnProfile: false
     }
   }
 
   async componentDidMount() {
     localStorage.setItem('event', "");
     const user = JSON.parse(localStorage.getItem('user'));
+    let profileUser = {};
+
+    if (this.props.match.params.userId && this.props.match.params.userId !== user.userId) {
+      const data1 = await API.get('user','/user/'+ this.props.match.params.userId);
+
+      if(data1.error) {
+        alert(data1.error)
+      }
+      if(data1.body) {
+        profileUser = JSON.parse(data1.body);
+      }
+    } else {
+      profileUser = user;
+      this.setState({isOwnProfile: true});
+    }
+
     this.setState({
-      user: user
+      user: profileUser
     })
     //alert(JSON.stringify(user))
-    if(user.youtubeid) {
+    if(profileUser.userType === "Influencer")
+      this.setState({isInfluencer : true});
+    else
+      this.setState({isInfluencer : false});
+    if(profileUser.youtubeid) {
       
-      const currentChannelId = user.youtubeid;
+      const currentChannelId = profileUser.youtubeid;
       const apikey = "AIzaSyB74HifExjAeP3uojTJzp-fJU2IVwu0fR8";
 
       var finalUrl = 'https://www.googleapis.com/youtube/v3/search?key=' + apikey + '&channelId='+ currentChannelId+ '&part=snippet,id&order=date&maxResults=4';
@@ -30,14 +52,13 @@ export default class Home extends React.Component {
       })
     }
 
-    const data = await API.get('event','/event/' + user.id)
+    const data = await API.get('event','/event/' + profileUser.id)
     if(data.error) {
       alert(data.error)
       return;
     }
     let eventList = JSON.parse(data.body);
     this.setState({events: eventList});
-    // alert(data.body)
   }
 
   eventClick(event) {
@@ -73,7 +94,11 @@ export default class Home extends React.Component {
 
     var eventElements = [];
     if(this.state.events) {
-      for(var i=0; i<this.state.events.length; i++) {
+      let length = 3;
+      if(this.state.events.length < 3)
+        length = this.state.events.length;
+
+      for(var i=0; i<length; i++) {
         eventElements.push (
           <Event img={this.state.events[i].image} title={this.state.events[i].eventName} 
                 author={this.state.events[i].userName} date={this.state.events[i].eventDate}
@@ -102,6 +127,52 @@ export default class Home extends React.Component {
       }
     }
 
+    const profileOptions = props => (
+      <>
+      <div className="blog-postcol cp3cols">
+        <div>
+          <div className="row_345">
+            <img style={{ width: 80, height: 80, borderRadius: "50%" }} src="/images/profile.png" />
+            <a className="button blue small" href="/updateProfile">
+              <span>Edit Profile</span>
+            </a>
+          </div>
+        </div>
+      </div><div className="blog-postcol cp3cols">
+          <div>
+            <div className="row_345">
+              <img style={{ width: 80, height: 80, borderRadius: "50%" }} src="/images/event.png" />
+              <a className="button green small" href="/createEvent">
+                <span title="Become an Influencer to Create Event" disabled={!this.state.isInfluencer}>
+                  Create Event </span>
+              </a>
+            </div>
+          </div>
+        </div><div className="blog-postcol cp3cols">
+          <div>
+            <div className="row_345">
+              <img style={{ width: 80, height: 80, borderRadius: "50%" }} src="/images/review.png" />
+              <a className="button yellow small">
+                <span title="Become an Influencer to View Reviews">
+                  View Reviews</span>
+              </a>
+            </div>
+          </div>
+        </div><div className="blog-postcol cp3cols">
+          <div>
+            <div className="row_345">
+              <img style={{ width: 80, height: 80, borderRadius: "50%" }} src="/images/security2.png" />
+              <a className="button purple small">
+                <span title="Become an Influencer for Payment Setup">
+                  Payment Setup</span>
+              </a>
+            </div>
+          </div>
+        </div><hr className="wp-block-separator is-style-wide" />
+        </>
+
+    );
+
     return (
       <>
       <div className="content">
@@ -121,50 +192,57 @@ export default class Home extends React.Component {
 
           <div className="gridContainer"> 
             <hr className="wp-block-separator is-style-wide"/>
-            <div className="blog-postsrow dark-text" data-type="row" data-dynamic-columns="one_page_express_latest_news_columns" data-content-shortcode="one_page_express_latest_news">            
-              <div className="blog-postcol cp3cols">
-                <div>
-                  <div className="row_345">
-                  <img style={{width: 80, height: 80, borderRadius: "50%"}} src="/images/profile.png" />
-                    <a className="button blue small" href="/updateProfile">
-                      <span data-theme="one_page_express_latest_news_read_more">Edit Profile</span>
-                    </a>
-                  </div>
-                </div>
-              </div>      
-              <div className="blog-postcol cp3cols">
-                <div>
-                  <div className="row_345">
-                    <img style={{width: 80, height: 80, borderRadius: "50%"}} src="/images/event.png" />
-                    <a className="button green small" href="/createEvent">
-                      <span data-theme="one_page_express_latest_news_read_more">Create Event</span>
-                    </a>
-                  </div>
-                </div>
-              </div>      
-              <div className="blog-postcol cp3cols">
-                <div>
-                  <div className="row_345">
-                    <img style={{width: 80, height: 80, borderRadius: "50%"}} src="/images/review.png" />
-                    <a className="button yellow small" href="/eventList">
-                      <span data-theme="one_page_express_latest_news_read_more">View Reviews</span>
-                    </a>
-                  </div>
-                </div>
-              </div>      
-              <div className="blog-postcol cp3cols">
-                <div>
-                  <div className="row_345">
-                  <img style={{width: 80, height: 80, borderRadius: "50%"}} src="/images/security2.png" />
-                    <a className="button purple small">
-                      <span data-theme="one_page_express_latest_news_read_more">Security Setup</span>
-                    </a>
-                  </div>
-                </div>
-              </div>  
-              
-              <hr className="wp-block-separator is-style-wide"/>
 
+            
+            <div className="blog-postsrow dark-text" data-type="row" data-dynamic-columns="one_page_express_latest_news_columns" data-content-shortcode="one_page_express_latest_news">            
+              <div>
+              {this.state.isOwnProfile ? (
+              <>
+                <div className="blog-postcol cp3cols">
+                  <div>
+                    <div className="row_345">
+                      <img style={{ width: 80, height: 80, borderRadius: "50%" }} src="/images/profile.png" />
+                      <a className="button blue small" href="/updateProfile">
+                        <span>Edit Profile</span>
+                      </a>
+                    </div>
+                  </div>
+                </div><div className="blog-postcol cp3cols">
+                    <div>
+                      <div className="row_345">
+                        <img style={{ width: 80, height: 80, borderRadius: "50%" }} src="/images/event.png" />
+                        <a className="button green small" href="/createEvent">
+                          <span title="Become an Influencer to Create Event" disabled={!this.state.isInfluencer}>
+                            Create Event </span>
+                        </a>
+                      </div>
+                    </div>
+                  </div><div className="blog-postcol cp3cols">
+                    <div>
+                      <div className="row_345">
+                        <img style={{ width: 80, height: 80, borderRadius: "50%" }} src="/images/review.png" />
+                        <a className="button yellow small">
+                          <span title="Become an Influencer to View Reviews">
+                            View Reviews</span>
+                        </a>
+                      </div>
+                    </div>
+                  </div><div className="blog-postcol cp3cols">
+                    <div>
+                      <div className="row_345">
+                        <img style={{ width: 80, height: 80, borderRadius: "50%" }} src="/images/security2.png" />
+                        <a className="button purple small">
+                          <span title="Become an Influencer for Payment Setup">
+                            Payment Setup</span>
+                        </a>
+                      </div>
+                    </div>
+                  </div><hr className="wp-block-separator is-style-wide" />
+                </>
+                ) : 
+              <h4></h4>
+              } 
+              </div>
               {this.state.user && this.state.user.youtubeid ? (
                 <>
                 <h4>YouTube Channel</h4>
@@ -191,8 +269,8 @@ export default class Home extends React.Component {
               {eventElements}
             </div> 
             <div className="blog-textcol"> 
-              {/* Deepthi - Redirect on click to All Events page */}
-              <a className="button blue" data-attr-shortcode="href:one_page_express_blog_link" href="#">SEE ALL EVENTS</a> 
+              <a className="button blue" data-attr-shortcode="href:one_page_express_blog_link" 
+                    href={'/eventList/' + this.state.user.id} >SEE ALL EVENTS</a> 
             </div> 
           </div>
         </div> 

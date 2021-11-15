@@ -14,7 +14,8 @@ export default class Home extends React.Component {
     this.state = {
       event: {},
       user: {},
-      categories:{}
+      categories:{},
+      submitText: "Create Event"
     }
   }
 
@@ -31,9 +32,10 @@ export default class Home extends React.Component {
       event.userName = user.name;
       event.currency = "INR";
       event.language = "English";
-      event.timezone = "Asia/Colombo";
+      event.timeZone = "Asia/Colombo";
     } else {
       event = JSON.parse(localEvent);
+      this.setState({submitText: "Update Event"});
     }
 
     const data = await API.get('category','/category/limit')
@@ -43,7 +45,7 @@ export default class Home extends React.Component {
     }
     let cat = JSON.parse(data.body);
     this.setState({categories: cat});
-    event.category = cat[0].Title;
+    event.category = cat[0].Name;
     this.setState({event: event});
   }
 
@@ -68,7 +70,7 @@ export default class Home extends React.Component {
 
   handleTimeZoneChange = e => {
     var event = this.state.event;
-    event.timezone = e;
+    event.timeZone = e;
     this.setState({
       event: event
     });
@@ -102,8 +104,11 @@ export default class Home extends React.Component {
         if(response.error) {
           NotificationManager.error(response.error, 'Error!');
         } else {
-          NotificationManager.success('Event Created Successfully', 'Successful!', 1000);
-          window.location.href = '/profile';
+          if(this.state.submitText === "Create Event")
+            NotificationManager.success('Event Created Successfully', 'Successful!', 2000);
+          else
+            NotificationManager.success('Event Updated Successfully', 'Successful!', 2000);
+          setTimeout(() => {  window.location.href = '/profile';}, 1000);
         }
       })
       .catch(error => {
@@ -116,7 +121,7 @@ export default class Home extends React.Component {
     let categoryList = this.state.categories && this.state.categories.length > 0
       && this.state.categories.map((item, i) => {
         return (
-          <option value={item.Title}>{item.Title}</option>
+          <option value={item.Name}>{item.Title}</option>
         )
       }, this);
 
@@ -166,14 +171,14 @@ export default class Home extends React.Component {
                       </div>
                     </div>
                     <div className="field">
-                      <label htmlFor="timezone">Time Zone</label>     
-                      <TimezonePicker value={this.state.event.timezone} onChange={this.handleTimeZoneChange}/>
-                      {/* <TimezonePicker value={this.state.event.timezone} onChange={({ id }) => this.handleTimeZoneChange(id)}/> */}
+                      <label htmlFor="timeZone">Time Zone</label>     
+                      <TimezonePicker value={this.state.event.timeZone} onChange={this.handleTimeZoneChange}/>
+                      {/* <TimezonePicker value={this.state.event.timeZone} onChange={({ id }) => this.handleTimeZoneChange(id)}/> */}
                     </div>
                     <div className="field">
-                      <label htmlFor="duration">Event Duration in Minutes</label>
-                      <input id="duration" type="number" onChange={this.handleChange} maxLength="50" 
-                        value={this.state.event.duration} placeholder="Enter Duration" required/>          
+                      <label htmlFor="eventDuration">Event Duration in Minutes</label>
+                      <input id="eventDuration" type="number" onChange={this.handleChange} maxLength="50" 
+                        value={this.state.event.eventDuration} placeholder="Enter Duration" required/>          
                     </div>
                     <div className="field">
                       <label htmlFor="price">Ticket Price and Currency</label>     
@@ -202,7 +207,7 @@ export default class Home extends React.Component {
                       <input id="capacity" type="number" onChange={this.handleChange} maxLength="50" 
                         value={this.state.event.capacity} placeholder="Enter Maximum Capacity" required/>
                     </div>
-                    <button type="submit" className="save" >Create Event</button>
+                    <button type="submit" className="save" >{this.state.submitText}</button>
                   </form>
                 </div>
               </div>

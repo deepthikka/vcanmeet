@@ -51,7 +51,6 @@ export default class Login extends React.Component {
 
     if(data1.body) {
       profile = JSON.parse(data1.body);
-      user.firstLogin = false;
       if(profile.name)
         user.name = profile.name;
 
@@ -62,12 +61,6 @@ export default class Login extends React.Component {
       user.description = profile.description;
       user.youtubeid = profile.youtubeid;
       user.instagramid = profile.instagramid;    
-    } else {
-      user.firstLogin = true;
-      user.userType = "Follower";
-      user.description = "";
-      user.youtubeid = "";
-      user.instagramid = ""; 
     }
     localStorage.setItem('profile', JSON.stringify(profile));
     localStorage.setItem('user', JSON.stringify(user));

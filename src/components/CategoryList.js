@@ -41,7 +41,7 @@ export default class Home extends React.Component {
             </div> 
             <div className="portfolio-cards-projectinfo"> 
               <div className="portfolio-cards-projnamecol" data-type="column"> 
-                <a href="#" className="portfolio-cards-projlink" target="_self" rel="noopener">
+                <a href={'/eventList/category/' + props.name} className="portfolio-cards-projlink" target="_self" rel="noopener">
                   <h4 className="portfolio-cards-projtitle">{props.title}</h4>
                 </a> 
               </div> 
@@ -54,7 +54,8 @@ export default class Home extends React.Component {
       if(this.state.categories) {
         for(var i=0; i<this.state.categories.length; i++) {
           categoryElements.push (
-            <Category img={this.state.categories[i].Image} title ={this.state.categories[i].Title}/>
+            <Category img={this.state.categories[i].Image} title ={this.state.categories[i].Title}
+            name={this.state.categories[i].Name}/>
           );
         }
       }  
