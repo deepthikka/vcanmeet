@@ -135,9 +135,9 @@ export default class Home extends React.Component {
                 <div className="card">
                   <form onSubmit={this.handleSubmit}>
                     <h3>Create Event</h3>
-                    <label htmlFor="photo-upload" className="custom-file-upload fas">
-                    <div className="img-wrap img-upload" >
-                        <img htmlFor="photo-upload" src={this.state.event.image} alt=""/>
+                    <label className="custom-file-upload fas">
+                      <div>
+                        <img className="profileblock" src={this.state.event.image} alt=""/>
                       </div>
                       <input id="photo-upload" type="file" onChange={this.photoUpload}/> 
                     </label>                    
@@ -207,7 +207,7 @@ export default class Home extends React.Component {
                       <input id="capacity" type="number" onChange={this.handleChange} maxLength="50" 
                         value={this.state.event.capacity} placeholder="Enter Maximum Capacity" required/>
                     </div>
-                    <button type="submit" className="save" >{this.state.submitText}</button>
+                    <button type="submit" className="save saveButton" >{this.state.submitText}</button>
                   </form>
                 </div>
               </div>

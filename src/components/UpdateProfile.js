@@ -103,8 +103,8 @@ export default class Home extends React.Component {
                   <form onSubmit={this.handleSubmit}>
                     <h3>Update your Profile</h3>
                     <label htmlFor="photo-upload" className="custom-file-upload fas">
-                      <div className="img-wrap img-upload" >
-                        <img htmlFor="photo-upload" src={this.state.user.image} alt=""/>
+                    <div>
+                        <img className="profileblock" src={this.state.user.image} alt=""/>
                       </div>
                       <input id="photo-upload" type="file" onChange={this.photoUpload}/> 
                     </label>                    
@@ -136,7 +136,7 @@ export default class Home extends React.Component {
                       <input id="instagramid" type="text" onChange={this.handleChange} maxLength="50" 
                         value={this.state.user.instagramid} placeholder="Enter Instagram Channel ID"/>
                     </div>
-                    <button type="submit" className="save" >Update </button>
+                    <button type="submit" className="save saveButton" >Update </button>
                   </form>
                 </div>
               </div>

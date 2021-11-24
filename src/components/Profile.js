@@ -144,8 +144,8 @@ export default class Home extends React.Component {
         <div className="page-content"> 
           <div id="latest-posts" style={{backgroundColor: "#ffffff"}} data-label="Latest posts" data-id="blog-section" data-events="latest_news" className="blog-section"> 
             <div className="gridContainer block1"> 
-              <div className="profileblock">
-                <img src={this.state.user.image} />
+              <div>
+                <img className="profileblock" src={this.state.user.image} />
               </div>
               <div className="nameblock">
                 <h3 className="fontstyle">{this.state.user.name}</h3>  
@@ -184,12 +184,12 @@ export default class Home extends React.Component {
                       </div>
                     </div>
                   </div><div className="blog-postcol cp3cols" disabled={this.state.isFollower}
-                        data-text="Become an Influencer to View Reviews">
+                        data-text="Become an Influencer to View Comments">
                     <div>
                       <div className="row_345">
                         <img style={{ width: 80, height: 80, borderRadius: "50%" }} src="/images/review.png" />
                         <a className="button yellow small">
-                          <span>View Reviews</span>
+                          <span>View Comments</span>
                         </a>
                       </div>
                     </div>

@@ -1,11 +1,12 @@
 /* global gapi */
-/* global FB */
 import React from "react";
-import { Auth } from 'aws-amplify';
 import {NotificationManager} from 'react-notifications';
 import {AmplifyAuthenticator, AmplifySignIn} from "@aws-amplify/ui-react";
 import './../css/Login.css';
 import { API } from 'aws-amplify';
+import FacebookLogin from 'react-facebook-login';
+
+import './../css/Login.css';
 
 export default class Login extends React.Component {
 
@@ -26,11 +27,38 @@ export default class Login extends React.Component {
     });  
   }
 
-  onFBLogIn(fbUser) {
-    // alert("Logged In as " + fbUser)
-    // FB.login(function (response) {
-    //   alert(response)
-    // });
+  async onFacebookLogIn(response) {
+    let user = {};
+    user.id = response.id;
+    user.name = response.name;
+    user.email = response.email;
+    user.image = response.picture.data.url
+
+    NotificationManager.success('Login Successful!! Loading Profile', 'Successful!', 10000);
+    const data1 = await API.get('user','/user/'+user.id);
+
+    if(data1.error) {
+      alert(data1.error)
+    }
+
+    let profile = {};
+
+    if(data1.body) {
+      profile = JSON.parse(data1.body);
+      if(profile.name)
+        user.name = profile.name;
+
+      if(profile.image) 
+        user.image = profile.image;
+    
+      user.userType = profile.userType;
+      user.description = profile.description;
+      user.youtubeid = profile.youtubeid;
+      user.instagramid = profile.instagramid;    
+    }
+    localStorage.setItem('profile', JSON.stringify(profile));
+    localStorage.setItem('user', JSON.stringify(user));
+    window.location.reload(false);
   }
 
   async onGoogleLogIn(googleUser) {
@@ -75,9 +103,8 @@ export default class Login extends React.Component {
 
     const OtherMethods = props => (
       <div id="alternativeLogin">
-        {/* <label>Log In with:</label> */}
         <div id="iconGroup">
-          {/* <Facebook />      */}
+          <Facebook />     
         </div>
         <div id="iconGroup">
           <Google />
@@ -86,10 +113,19 @@ export default class Login extends React.Component {
     );
     
     const Facebook = props => (
-      <div className="fb-login-button" data-width="250" data-size="large" 
-        data-button-type="login_with" data-layout="default" data-auto-logout-link="false" 
-        data-use-continue-as="false" onClick={this.onFBLogIn()}
-        data-scope="public_profile,email"></div>
+
+      <FacebookLogin
+              appId="978675252693276"
+              autoLoad={false}
+              fields="name,email,picture"
+              scope="public_profile,user_friends"
+              cssClass="btnFacebook"
+              callback={this.onFacebookLogIn}
+              icon={
+                <i className="fa fa-facebook fa-lg" style={{marginLeft:'7px'}}></i>
+              }
+              textButton = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sign In with Facebook"                                                                
+              />
     );
 
 

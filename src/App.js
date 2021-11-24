@@ -5,7 +5,8 @@ import {
   Redirect,
   BrowserRouter as Router,
   Switch,
-  Route
+  Route,
+  withRouter 
 } from "react-router-dom";
 import './css/App.css';
 import './css/theme.css';
@@ -21,7 +22,7 @@ import CreateEvent from './components/CreateEvent';
 import Event from './components/Event';
 import EventList from './components/EventList';
 import CategoryList from './components/CategoryList';
-
+import VideoMeeting from './components/VideoMeeting';
 import 'react-notifications/lib/notifications.css';
 
 function App() {
@@ -128,63 +129,75 @@ function App() {
     )
   }
 
-  return (
-    <Router>
-    <body className="home page-id-168 custom-background homepage-template">
-    <div className="header-top homepage"  data-sticky='0'  data-sticky-mobile='1'  data-sticky-to='top' >
+  const AppHeader = props => (
+    <>
+    <div className="header-top homepage" data-sticky='0' data-sticky-mobile='1' data-sticky-to='top'>
       <div className="navigation-wrapper ope-front-page">
         <div className="logo_col">
           <a className="text-logo" href="/">VcanMeet</a>
         </div>
         <div className="main_menu_col">
           <div id="drop_mainmenu_container" className="menu-menu-home-container">
-            <ul id="drop_mainmenu" className="fm2_drop_mainmenu" >
+            <ul id="drop_mainmenu" className="fm2_drop_mainmenu">
               <li id="menu-item-37" className="menu-item menu-item-type-custom menu-item-object-custom current-menu-item menu-item-home menu-item-37">
-              <div className="searchBar">
-                <input id="searchQueryInput" type="text" name="searchQueryInput" placeholder="Find an Event" value={event} />
-                <button id="searchQuerySubmit" type="submit" name="searchQuerySubmit">
-                <svg className="svgstyle" viewBox="0 0 24 24"><path fill="#666666" d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z" /></svg>
-                </button>
-              </div>
+                <div className="searchBar">
+                  <input id="searchQueryInput" type="text" name="searchQueryInput" placeholder="Find an Event" value={event} />
+                  <button id="searchQuerySubmit" type="submit" name="searchQuerySubmit">
+                    <svg className="svgstyle" viewBox="0 0 24 24"><path fill="#666666" d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z" /></svg>
+                  </button>
+                </div>
               </li>
               <li id="menu-item-37" className="menu-item menu-item-type-custom menu-item-object-custom current-menu-item menu-item-home menu-item-37"><a href="/" aria-current="page">Home</a></li>
               {localStorage.getItem('user') ? (
                 <><li id="menu-item-235" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-235"><a href="/profile">Profile</a></li>
-                <li id="menu-item-77" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-77"><a href="#" onClick={e => logout()}>Log Out</a></li>
+                  <li id="menu-item-77" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-77"><a href="#" onClick={e => logout()}>Log Out</a></li>
                 </>
               ) : (
                 <><li id="menu-item-77" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-77"><a href="/signup">Join</a></li>
-                <li id="menu-item-150" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-150"><a href="/login">Log In</a></li>
+                  <li id="menu-item-150" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-150"><a href="/login">Log In</a></li>
                 </>
               )}
             </ul>
           </div>
         </div>
       </div>
-    </div>
-
-    <div id="page" className="site">
-      <div className="header-wrapper">
-        <div  className='header-homepage  color-overlay' style={{minHeight:""}}>
-			    <div className="header-description gridContainer content-on-center">
-				    <div className="row header-description-row">
-              <div className="header-content header-content-centered">
-                <div className="align-holder">
-                  <div className="header-buttons-wrapper">
-                  </div>        
+    </div><div id="page" className="site">
+        <div className="header-wrapper">
+          <div className='header-homepage  color-overlay' style={{ minHeight: "" }}>
+            <div className="header-description gridContainer content-on-center">
+              <div className="row header-description-row">
+                <div className="header-content header-content-centered">
+                  <div className="align-holder">
+                    <div className="header-buttons-wrapper">
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+          <div className="header-separator header-separator-bottom ">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" preserveAspectRatio="none">
+              <path className="svg-white-bg" d="M737.9,94.7L0,0v100h1000V0L737.9,94.7z" />
+            </svg>
+          </div>
         </div>
-        <div className="header-separator header-separator-bottom ">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" preserveAspectRatio="none">
-            <path className="svg-white-bg" d="M737.9,94.7L0,0v100h1000V0L737.9,94.7z"/>
-          </svg>
-        </div>
+        <NotificationContainer />
       </div>
-      <NotificationContainer/>
+    </>
+  );
+
+  const Content = withRouter(props =>
+    <div>
+      {(props.location.pathname !== '/meeting') ? <AppHeader/> : null}
     </div>
+);
+
+  return (
+    <Router>
+      {
+        <Content/>
+      }
+    <body className="home page-id-168 custom-background homepage-template">
     <Switch>
       <Route exact path="/" component={Home}/>
       <Route exact path="/signup" component={Signup} />
@@ -208,6 +221,8 @@ function App() {
       <Route exact path="/eventList/:user" component={EventList}/>
       <Route exact path="/eventList/category/:category" component={EventList}/>
       <Route exact path="/categoryList/" component={CategoryList}/>
+      <Route exact path="/meeting" component={VideoMeeting}/>
+
     </Switch>
     </body>
     <div className="footer">

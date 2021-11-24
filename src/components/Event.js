@@ -66,8 +66,8 @@ export default class Home extends React.Component {
       <>
       <div id="page-content" class="page-content eventBackground">
         <div className="gridContainer block1"> 
-          <div className="profileblock">
-            <img src={this.state.user.image} />
+          <div>
+            <img className="profileblock" src={this.state.user.image} />
           </div>
           <div className="nameblock">
             <h3 className="fontstyle">{this.state.user.name}</h3>  
@@ -92,7 +92,7 @@ export default class Home extends React.Component {
                             <span class="has-inline-color has-white-color"><strong>Edit Event</strong></span>
                           </a>
                           :
-                          <a class="wp-block-button__link has-vivid-green-cyan-background-color has-background">
+                          <a href="/meeting" target="_blank" class="wp-block-button__link has-vivid-green-cyan-background-color has-background">
                             <span class="has-inline-color has-white-color"><strong>Book Now</strong></span>
                           </a>
                         }
