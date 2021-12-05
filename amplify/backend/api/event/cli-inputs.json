@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "paths": {
+    "/event": {
+      "permissions": {
+        "setting": "open"
+      },
+      "lambdaFunction": "eventFunction"
+    }
+  }
+}

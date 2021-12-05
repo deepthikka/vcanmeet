@@ -118,7 +118,7 @@ export default class Signup extends React.Component {
               icon={
                 <i className="fa fa-facebook fa-lg" style={{marginLeft:'7px'}}></i>
               }
-              textButton = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sign In with Facebook"                                                                
+              textButton = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sign In with Facebook"                                                                
               />
     );
 

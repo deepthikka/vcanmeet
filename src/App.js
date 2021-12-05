@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { Hub, API } from "aws-amplify";
 
 import {
@@ -206,11 +206,11 @@ function App() {
       :
       <Route exact path="/login" component={Login} />
       }
+      <Route exact path="/profile/:userId" component={Profile}/>
       {localStorage.getItem('user') ?
       <Route exact path="/profile" component={Profile} />
       : <Redirect from="/profile" to="/login" />
-      }      
-      <Route exact path="/profile/:userId" component={Profile}/>
+      }
       {localStorage.getItem('user') ?
       <Route exact path="/updateProfile" component={UpdateProfile} />
       : <Redirect from="/updateProfile" to="/login" />
@@ -229,7 +229,7 @@ function App() {
       <div className="gridContainer">
         <div className="row">
           <p className="footer-copyright">
-            &copy;&nbsp;&nbsp;2021&nbsp;VcanMeet v0.4&nbsp;Contact : info@vcanmeet.com</p>
+            &copy;&nbsp;&nbsp;2021&nbsp;VcanMeet v0.5&nbsp;Contact : info@vcanmeet.com</p>
         </div>
       </div>
     </div>

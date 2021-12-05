@@ -13,21 +13,26 @@ export default class Home extends React.Component {
   async componentDidMount() {
     localStorage.setItem('event', "");
 
-    const data = await API.get('category','/category/limit')
-    if(data.error) {
-      alert(data.error)
-      return;
-    }
-    let cat = JSON.parse(data.body);
-    this.setState({categories: cat});
+    API.get('category','/category/limit')
+    .then(data => {
+      if(data.error) {
+        alert(data.error)
+        return;
+      }      
+      
+      let cat = JSON.parse(data.body);
+      this.setState({categories: cat});
+    })
 
-    const data1 = await API.get('event','/event')
-    if(data1.error) {
-      alert(data1.error)
-      return;
-    }
-    let eventList = JSON.parse(data1.body);
-    this.setState({events: eventList});
+    await API.get('event','/event')
+    .then(data1 => {
+      if(data1.error) {
+        alert(data1.error)
+        return;
+      }
+      let eventList = JSON.parse(data1.body);
+      this.setState({events: eventList});
+    })
   }
 
   eventClick(event) {
@@ -140,7 +145,7 @@ export default class Home extends React.Component {
             <div className="blog-textrow"> 
               <div className="blog-textcol dynamic-color" data-type="column"> 
                 <h3 className="fontstyle">UpComing Events</h3> 
-                <p className="">Learn more from the your favourite youtubers and influencres interactively through video conference</p> 
+                <p className="">Learn more from the your favourite youtubers and influencers interactively through video conference</p> 
               </div> 
             </div> 
             <div className="blog-postsrow dark-text" data-type="row" data-dynamic-columns="one_page_express_latest_news_columns" data-content-shortcode="one_page_express_latest_news">            

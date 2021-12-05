@@ -21,7 +21,13 @@ const awsmobile = {
         "responseType": "code"
     },
     "federationTarget": "COGNITO_USER_POOLS",
-    "aws_cognito_login_mechanisms": [],
+    "aws_cognito_username_attributes": [
+        "EMAIL"
+    ],
+    "aws_cognito_social_providers": [
+        "FACEBOOK",
+        "GOOGLE"
+    ],
     "aws_cognito_signup_attributes": [
         "EMAIL"
     ],
@@ -49,6 +55,10 @@ const awsmobile = {
         {
             "tableName": "Event",
             "region": "us-east-2"
+        },
+        {
+            "tableName": "EventBooking",
+            "region": "us-east-2"
         }
     ],
     "aws_cloud_logic_custom": [
@@ -66,8 +76,14 @@ const awsmobile = {
             "name": "event",
             "endpoint": "https://mpoilve1gi.execute-api.us-east-2.amazonaws.com/staging",
             "region": "us-east-2"
+        },
+        {
+            "name": "booking",
+            "endpoint": "https://hdso2iqj0e.execute-api.us-east-2.amazonaws.com/staging",
+            "region": "us-east-2"
         }
-    ]
+    ],
+    "aws_cognito_login_mechanisms": []
 };
 
 

@@ -12,14 +12,36 @@
       "AmplifyAppId": "d1rhcyp7mc8dsg"
     },
     "categories": {
+      "function": {
+        "categoryFunction": {
+          "deploymentBucketName": "amplify-amplify9befba8829824-staging-201151-deployment",
+          "s3Key": "amplify-builds/categoryFunction-70333975303735514541-build.zip"
+        },
+        "userFunction": {
+          "deploymentBucketName": "amplify-amplify9befba8829824-staging-201151-deployment",
+          "s3Key": "amplify-builds/userFunction-3246467a793259627844-build.zip"
+        },
+        "eventFunction": {
+          "deploymentBucketName": "amplify-amplify9befba8829824-staging-201151-deployment",
+          "s3Key": "amplify-builds/eventFunction-71626d6c436338783548-build.zip"
+        },
+        "bookingFunction": {
+          "deploymentBucketName": "amplify-amplify9befba8829824-staging-201151-deployment",
+          "s3Key": "amplify-builds/bookingFunction-4e5852504a4f384e5830-build.zip"
+        }
+      },
+      "auth": {
+        "vcanmeetapp4cb73148": {},
+        "true": {}
+      },
       "storage": {
         "MasterCategory": {
           "tableName": "Master-Category",
           "region": "us-east-2",
           "arn": "arn:aws:dynamodb:us-east-2:943954999559:table/Master-Category",
+          "streamArn": "arn:aws:dynamodb:us-east-2:943954999559:table/Master-Category/stream/2021-09-26T09:04:44.851",
           "partitionKeyName": "Name",
-          "partitionKeyType": "S",
-          "streamArn": "arn:aws:dynamodb:us-east-2:943954999559:table/Master-Category/stream/2021-09-26T09:04:44.851"
+          "partitionKeyType": "S"
         },
         "user": {
           "tableName": "user",
@@ -32,26 +54,20 @@
           "tableName": "Event",
           "region": "us-east-2",
           "arn": "arn:aws:dynamodb:us-east-2:943954999559:table/Event",
-          "partitionKeyName": "event_id",
-          "partitionKeyType": "S"
-        }
-      },
-      "function": {
-        "categoryFunction": {
-          "deploymentBucketName": "amplify-amplify9befba8829824-staging-201151-deployment",
-          "s3Key": "amplify-builds/categoryFunction-70333975303735514541-build.zip"
+          "partitionKeyName": "userId",
+          "partitionKeyType": "S",
+          "sortKeyName": "eventDate",
+          "sortKeyType": "S"
         },
-        "userFunction": {
-          "deploymentBucketName": "amplify-amplify9befba8829824-staging-201151-deployment",
-          "s3Key": "amplify-builds/userFunction-3246467a793259627844-build.zip"
-        },
-        "eventFunction": {
-          "deploymentBucketName": "amplify-amplify9befba8829824-staging-201151-deployment",
-          "s3Key": "amplify-builds/eventFunction-455a3932345743645241-build.zip"
+        "EventBooking": {
+          "tableName": "EventBooking",
+          "region": "us-east-2",
+          "arn": "arn:aws:dynamodb:us-east-2:943954999559:table/EventBooking",
+          "partitionKeyName": "eventId",
+          "partitionKeyType": "S",
+          "sortKeyName": "userId",
+          "sortKeyType": "S"
         }
-      },
-      "auth": {
-        "vcanmeetapp4cb73148": {}
       }
     }
   }

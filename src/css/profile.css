@@ -281,3 +281,20 @@
     opacity: 0.3;
     content: attr(data-text);
  }
+
+ .modal {
+  background: rgba(0, 0, 0, 0.6);
+}
+.modal-container {
+  position: absolute;
+  width: 30%;
+  background: #49afa8;
+  left: 25%;
+  top: 30%;
+  padding: 20px;
+}
+
+.title {
+  text-align: center;
+  font-weight: bolder;
+}

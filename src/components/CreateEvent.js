@@ -27,7 +27,7 @@ export default class Home extends React.Component {
 
     let event = {};
     const localEvent = localStorage.getItem('event');
-    if(localEvent == null || localEvent == "") {
+    if(localEvent === null || localEvent === "") {
       event.userId = user.id;
       event.userName = user.name;
       event.currency = "INR";

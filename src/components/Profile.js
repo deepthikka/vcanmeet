@@ -15,11 +15,17 @@ export default class Home extends React.Component {
 
   async componentDidMount() {
     localStorage.setItem('event', "");
-    const user = JSON.parse(localStorage.getItem('user'));
+    var localUser = localStorage.getItem('user');
+    var user = {};
+
+    if(localUser === null || localUser === "") {
+    } else {
+      user = JSON.parse(localUser);
+    }
 
     let profileUser = {};
 
-    if (this.props.match.params.userId && this.props.match.params.userId !== user.userId) {
+    if (this.props.match.params.userId && (user.userId === null || this.props.match.params.userId !== user.userId)) {
       const data1 = await API.get('user','/user/'+ this.props.match.params.userId);
 
       if(data1.error) {
@@ -166,7 +172,7 @@ export default class Home extends React.Component {
                 <div className="blog-postcol cp3cols">
                   <div>
                     <div className="row_345">
-                      <img style={{ width: 80, height: 80, borderRadius: "50%" }} src="/images/profile.png" />
+                      <img style={{ width: "50%", height: "40%", borderRadius: "50%" }} src="/images/profile.png" />
                       <a className="button blue small" href="/updateProfile">
                         <span>Edit Profile</span>
                       </a>
@@ -177,7 +183,7 @@ export default class Home extends React.Component {
                         data-text="Become an Influencer to Create Event">
                     <div>
                       <div className="row_345">
-                        <img style={{ width: 80, height: 80, borderRadius: "50%" }} src="/images/event.png" />
+                        <img style={{ width: "40%", height: "40%", borderRadius: "50%" }} src="/images/event.png" />
                         <a className="button green small" href="/createEvent">
                           <span >Create Event </span>
                         </a>
@@ -187,7 +193,7 @@ export default class Home extends React.Component {
                         data-text="Become an Influencer to View Comments">
                     <div>
                       <div className="row_345">
-                        <img style={{ width: 80, height: 80, borderRadius: "50%" }} src="/images/review.png" />
+                        <img style={{ width: "40%", height: "40%", borderRadius: "50%" }} src="/images/review.png" />
                         <a className="button yellow small">
                           <span>View Comments</span>
                         </a>
@@ -198,19 +204,19 @@ export default class Home extends React.Component {
                         data-text="Become an Influencer for Payment Setup">
                     <div>
                       <div className="row_345">
-                        <img style={{ width: 80, height: 80, borderRadius: "50%" }} src="/images/security2.png" />
+                        <img style={{ width: "40%", height: "40%", borderRadius: "50%" }} src="/images/security2.png" />
                         <a className="button purple small">
                           <span>Payment Setup</span>
                         </a>
                       </div>
                     </div>
                   </div>
-                  <hr className="wp-block-separator is-style-wide" />
                 </>
                 ) : 
               <h4></h4>
               } 
               </div>
+              <hr className="wp-block-separator is-style-wide" />
               {this.state.user && this.state.user.youtubeid ? (
                 <>
                 <h4>YouTube Channel</h4>

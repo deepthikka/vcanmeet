@@ -38,9 +38,18 @@ app.use(function(req, res, next) {
  **********************/
 
 app.get('/event', function(req, res) {
+  var todayDate = new Date().toISOString().slice(0, 10);
   let params = {
     TableName : tablename,
-    limit : 10
+    limit : 10,
+    // ProjectionExpression:"eventName, image, userName, eventDate, eventId, userId, startTime, eventDuration, timeZone, description",
+    FilterExpression: "#eventDate > :eventDate",
+    ExpressionAttributeNames:{
+      "#eventDate": "eventDate"
+    },
+    ExpressionAttributeValues: {
+        ":eventDate": todayDate
+    }
   }
 
   dynamodb.scan(params, (error, result) => {
@@ -52,42 +61,93 @@ app.get('/event', function(req, res) {
   })
 });
 
-app.get('/event/*', function(req, res) {
-  // Add your code here
-  res.json({success: 'get call succeed!', url: req.url});
-});
-
-app.get('/event/:id', function(req, res) {
-
-  let result = [];
-  result.Item = {id: req.params.id};
-
+app.get('/event/category/:category', function(req, res) {
+  var todayDate = new Date().toISOString().slice(0, 10);
   let params = {
     TableName : tablename,
-    Key: {
-      "event_id": req.params.id
+    // limit : 10,
+    // ProjectionExpression:"eventName, image, userName, eventDate, eventId, userId, startTime, eventDuration, timeZone, description",
+    FilterExpression: "#eventDate > :eventDate AND #category = :category", 
+    ExpressionAttributeNames:{
+      "#eventDate": "eventDate",
+      "#category": "category",
+    },
+    ExpressionAttributeValues: {
+        ":eventDate": todayDate,
+        ":category": req.params.category
     }
   }
 
-  dynamodb.get(params, (error, result) => {
+  dynamodb.scan(params, (error, result) => {
     if (error) {
       res.json({statusCode: 500, error: error.message});
     } else {
-      res.json({statusCode: 200, url: req.url, body: JSON.stringify(result.Item)});
+      res.json({statusCode: 200, url: req.url, body: JSON.stringify(result.Items)});
     }
   })
 });
 
-/****************************
-* Example put method *
-****************************/
+app.get('/event/:userId', function(req, res) {
+
+  let result = [];
+  var todayDate = new Date().toISOString().slice(0, 10);
+
+  let params = {
+    TableName : tablename,
+    // ProjectionExpression:"eventName, image, userName, eventDate, eventId, userId",
+    KeyConditionExpression: "#userId = :userId AND #eventDate >= :eventDate",
+    ExpressionAttributeNames:{
+        "#userId": "userId",
+        "#eventDate": "eventDate"
+    },
+    ExpressionAttributeValues: {
+        ":userId": req.params.userId,
+        ":eventDate": todayDate
+    }
+  }
+
+  dynamodb.query(params, (error, result) => {
+    if (error) {
+      res.json({statusCode: 500, error: error.message});
+    } else {
+      res.json({statusCode: 200, url: req.url, body: JSON.stringify(result.Items)});
+    }
+  })
+});
+
+app.get('/event/view/:userId/:eventId', function(req, res) {
+
+  let result = [];
+ 
+  let params = {
+    TableName : tablename,
+    limit : 1,
+    FilterExpression: "#userId = :userId AND #eventId = :eventId",
+    ExpressionAttributeNames:{
+        "#userId": "userId",
+        "#eventId": "eventId"
+    },
+    ExpressionAttributeValues: {
+        ":userId": req.params.userId,
+        ":eventId": req.params.eventId
+    } 
+  }
+
+  dynamodb.scan(params, (error, result) => {
+    if (error) {
+      res.json({statusCode: 500, error: error.message});
+    } else {
+      res.json({statusCode: 200, url: req.url, body: JSON.stringify(result.Items)});
+    }
+  })
+});
+
 
 app.put('/event', function(req, res) {
-  // Add your code here
-  let user = req.body;
+  let event = req.body;
   var params = {
     TableName: tablename,
-    Item: user
+    Item: event
   }
   dynamodb.put(params, (error, result) => {
     if (error) {

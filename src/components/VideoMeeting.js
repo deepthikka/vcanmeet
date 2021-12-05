@@ -5,7 +5,7 @@ export default function App1() {
 
   useEffect(() => {
     const apiKey = "d06a44ae-e1f8-467c-98c5-38ddf4cb4e87";
-    const meetingId = "milkyway";
+    const meetingId = "milky-way";
     const name = "Demo User";
 
     const config = {
@@ -14,7 +14,7 @@ export default function App1() {
       apiKey: apiKey,
 
       containerId: null,
-      redirectOnLeave: "http://localhost:3000/",
+      redirectOnLeave: "http://uat.vcanmeet.com/",
 
       micEnabled: true,
       webcamEnabled: true,
