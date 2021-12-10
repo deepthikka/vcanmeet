@@ -105,8 +105,9 @@ export default class Home extends React.Component {
       var momentObj = moment(this.state.event.eventDate + this.state.event.startTime, 'YYYY-MM-DDLT');
 
       // conversion
-      var startTime = momentObj.format('YYYY-MM-DDTHH:mm');
-      var endTime = momentObj.add(this.state.event.eventDuration, 'minutes').format('YYYY-MM-DDTHH:mm');
+      //var startTime = momentObj.format('YYYY-MM-DDTHH:mm');
+      var startTime = momentObj.subtract(5, 'minutes').format('YYYY-MM-DDTHH:mm');
+      var endTime = momentObj.add(this.state.event.eventDuration + 5, 'minutes').format('YYYY-MM-DDTHH:mm');
       var currentTime = moment().utcOffset('+05:30').format('YYYY-MM-DDTHH:mm');
 
       var jointime = moment(currentTime).isBetween(startTime,endTime);
@@ -201,7 +202,7 @@ export default class Home extends React.Component {
               <div class="wp-block-columns" style={{width:"33.33%"}}>
                 <div class="wp-block-column"></div>
                 <div class="wp-block-cover has-background-dim">
-                  <img class="wp-block-cover__image-background" alt="" src={this.state.event.image} />
+                  <img class="wp-block-cover__image-background" style={{objectFit: 'fill'}} alt="" src={this.state.event.image} />
                   <div class="wp-block-cover__inner-container">
                     <div class="wp-block-buttons">
                       <div class="wp-block-button has-custom-width wp-block-button__width-100 is-style-fill">
@@ -219,15 +220,16 @@ export default class Home extends React.Component {
                             : 
                             <>
                             { this.state.hasBooked?
-                              <a href="#" class="wp-block-button__link has-vivid-green-cyan-background-color has-background">
-                                <span class="has-inline-color has-white-color"><strong>Delete Booking</strong></span>
+                            <div>
+                              <a class="wp-block-button__link has-vivid-cyan-blue-background-color has-background">
+                                  <span class="has-inline-color has-white-color"><strong>Booking Done</strong></span>
                               </a>
+                              </div>
                               :
                             <>
                               <a href="#"  class="wp-block-button__link has-vivid-green-cyan-background-color has-background"
                               onClick={e => this.modalOpen(e)}>
-                                {/* target="_blank" */}
-                                  <span class="has-inline-color has-white-color"><strong>Book Now</strong></span>
+                                  <span class="has-inline-color has-white-color" ><strong>Book Now</strong></span>
                               </a>
                               <Modal show={this.state.bookingModal} handleClose={e => this.modalClose(e)}>
                                 <div className="form-group">
@@ -275,7 +277,7 @@ export default class Home extends React.Component {
                       <div className="eventDisplay">
                         <div>
                           <img style={{width: 50, height: 50}} src="/images/calendar.png" />
-                          <a className="button blue" style={{width: 200, height: 50}}>
+                          <a className="button blue" style={{width: 300, height: 50, color: 'white', fontSize: 'large'}}>
                               {this.state.event.eventDate}
                           </a>
                         </div>
@@ -283,7 +285,7 @@ export default class Home extends React.Component {
                       <div className="eventDisplay">
                         <div>
                           <img style={{width: 50, height: 50}} src="/images/time.png" />
-                          <a className="button purple" style={{width: 200, height: 50}}>
+                          <a className="button purple" style={{width: 300, height: 50, color: 'white', fontSize: 'large'}}>
                             {this.state.event.startTime} - {this.state.event.eventDuration} Minutes
                           </a>
                         </div>
@@ -291,7 +293,7 @@ export default class Home extends React.Component {
                       <div className="eventDisplay">
                         <div>
                           <img style={{width: 50, height: 50}} src="/images/timezone.png" />
-                          <a className="button yellow" style={{width: 200, height: 50}}>
+                          <a className="button yellow" style={{width: 300, height: 50, color: 'white', fontSize: 'large'}}>
                               {this.state.event.timeZone}
                           </a>
                         </div>
@@ -299,7 +301,7 @@ export default class Home extends React.Component {
                       <div className="eventDisplay">
                         <div>
                           <img style={{width: 50, height: 50}} src="/images/ticket.png" />
-                          <a className="button green" style={{width: 200, height: 50}}>
+                          <a className="button green" style={{width: 300, height: 50, color: 'white', fontSize: 'large'}}>
                             {this.state.event.price}  {this.state.event.currency}
                           </a>
                         </div>

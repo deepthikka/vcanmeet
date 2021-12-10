@@ -50,17 +50,6 @@ export default class Home extends React.Component {
       this.setState({isFollower : true});
     }
 
-    if(profileUser.youtubeid) {
-      
-      const currentChannelId = profileUser.youtubeid;
-      const apikey = "AIzaSyB74HifExjAeP3uojTJzp-fJU2IVwu0fR8";
-
-      var finalUrl = 'https://www.googleapis.com/youtube/v3/search?key=' + apikey + '&channelId='+ currentChannelId+ '&part=snippet,id&order=date&maxResults=4';
-      const data = await fetch(finalUrl).then(response => response.json());
-      this.setState({
-        videos: data.items
-      })
-    }
 
     let url = "";
     if(isFollower) {
@@ -76,6 +65,19 @@ export default class Home extends React.Component {
     }
     let eventList = JSON.parse(data.body);
     this.setState({events: eventList});
+    
+    if(profileUser.youtubeid) {
+      
+      const currentChannelId = profileUser.youtubeid;
+      const apikey = "AIzaSyB74HifExjAeP3uojTJzp-fJU2IVwu0fR8";
+
+      var finalUrl = 'https://www.googleapis.com/youtube/v3/search?key=' + apikey + '&channelId='+ currentChannelId+ '&part=snippet,id&order=date&maxResults=4';
+      const data = await fetch(finalUrl).then(response => response.json());
+      this.setState({
+        videos: data.items
+      })
+    }
+
   }
 
   eventClick(event) {
@@ -88,7 +90,7 @@ export default class Home extends React.Component {
     const Event = props => (
     <div id="post-117" className="blog-postcol cp4cols">
       <div className="post-content">
-        <a >
+        <a onClick={() => this.eventClick(props)}>
           <img className="eventImg" src={props.img} />
         </a>
         <div className="row_345">
@@ -172,7 +174,7 @@ export default class Home extends React.Component {
                 <div className="blog-postcol cp3cols">
                   <div>
                     <div className="row_345">
-                      <img style={{ width: "50%", height: "40%", borderRadius: "50%" }} src="/images/profile.png" />
+                      <img style={{ width: "50%", height: "40%", borderRadius: "50%" }} src="/images/profile.png" /><br/>
                       <a className="button blue small" href="/updateProfile">
                         <span>Edit Profile</span>
                       </a>
@@ -183,7 +185,7 @@ export default class Home extends React.Component {
                         data-text="Become an Influencer to Create Event">
                     <div>
                       <div className="row_345">
-                        <img style={{ width: "40%", height: "40%", borderRadius: "50%" }} src="/images/event.png" />
+                        <img style={{ width: "40%", height: "40%", borderRadius: "50%" }} src="/images/event.png" /><br/>
                         <a className="button green small" href="/createEvent">
                           <span >Create Event </span>
                         </a>
@@ -193,7 +195,7 @@ export default class Home extends React.Component {
                         data-text="Become an Influencer to View Comments">
                     <div>
                       <div className="row_345">
-                        <img style={{ width: "40%", height: "40%", borderRadius: "50%" }} src="/images/review.png" />
+                        <img style={{ width: "40%", height: "40%", borderRadius: "50%" }} src="/images/review.png" /><br/>
                         <a className="button yellow small">
                           <span>View Comments</span>
                         </a>
@@ -204,7 +206,7 @@ export default class Home extends React.Component {
                         data-text="Become an Influencer for Payment Setup">
                     <div>
                       <div className="row_345">
-                        <img style={{ width: "40%", height: "40%", borderRadius: "50%" }} src="/images/security2.png" />
+                        <img style={{ width: "40%", height: "40%", borderRadius: "50%" }} src="/images/security2.png" /><br/>
                         <a className="button purple small">
                           <span>Payment Setup</span>
                         </a>

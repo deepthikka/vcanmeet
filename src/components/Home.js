@@ -45,7 +45,7 @@ export default class Home extends React.Component {
     const Event = props => (
       <div className="blog-postcol cp4cols">
         <div className="post-content">
-          <a >
+          <a onClick={() => this.eventClick(props)}>
             <img className="eventImg" src={props.img} />
           </a>
           <div className="row_345">
@@ -69,7 +69,9 @@ export default class Home extends React.Component {
         <div className="portfolio-cards-projectcard"> 
           <div className="contentswap-effect ContentSwap104" hover-fx="ContentSwap104" id="ContentSwap104" is-hovered="1"> 
             <div className="ContentSwap104_content initial-image">
+              <a href={'/eventList/category/' + props.name}>
               <img className="portfolio-cards-projectimg" data-size="1200x800" src={props.img}></img>
+              </a>
             </div> 
             <div className="overlay content-style">
             </div> 

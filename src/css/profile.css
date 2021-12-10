@@ -177,6 +177,7 @@
   .saveButton:focus{
     outline: none;
   }
+
   .lds-ripple {
     display: inline-block;
     position: relative;

@@ -16,6 +16,7 @@ import {NotificationManager, NotificationContainer} from 'react-notifications';
 import Home from './components/Home';
 import Login from './components/Login';
 import Signup from './components/Signup';
+import ConfirmSignup from './components/ConfirmSignup';
 import Profile from './components/Profile';
 import UpdateProfile from './components/UpdateProfile';
 import CreateEvent from './components/CreateEvent';
@@ -93,15 +94,22 @@ function App() {
           break;
         case 'signUp':
             NotificationManager.success('Succesfully Signed up!', 'Successful!', 2000);
-            window.location.href = '/login';
+            window.location.href = '/confirmSignup';
             break;
+        case 'confirmSignUp':
+          NotificationManager.success('Succesfully Signed up!', 'Successful!', 2000);
+          window.location.href = '/login';
+          break;
         case 'signOut':
         case 'oAuthSignOut':
           localStorage.setItem('user', '');
           localStorage.setItem('profile', '');
           refreshPage();
           break;
-        case 'signUp_failure':
+          case 'confirmSignUp_failure':
+            NotificationManager.error('Confirm Signup Failed! ' + data.message, 'Error!', 2000);
+            break;
+          case 'signUp_failure':
           NotificationManager.error('Signup Failed! ' + data.message, 'Error!', 2000);
           break;
         case 'signIn_failure':
@@ -201,6 +209,7 @@ function App() {
     <Switch>
       <Route exact path="/" component={Home}/>
       <Route exact path="/signup" component={Signup} />
+      <Route exact path="/confirmSignup" component={ConfirmSignup} />
       {localStorage.getItem('user') ?
       <Redirect from="/login" to="/profile" />
       :
@@ -229,7 +238,7 @@ function App() {
       <div className="gridContainer">
         <div className="row">
           <p className="footer-copyright">
-            &copy;&nbsp;&nbsp;2021&nbsp;VcanMeet v0.5&nbsp;Contact : info@vcanmeet.com</p>
+            &copy;&nbsp;&nbsp;2021&nbsp;VcanMeet v0.6&nbsp;Contact : info@vcanmeet.com</p>
         </div>
       </div>
     </div>
