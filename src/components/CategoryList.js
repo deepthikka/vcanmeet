@@ -27,7 +27,9 @@ export default class Home extends React.Component {
           <div className="portfolio-cards-projectcard"> 
             <div className="contentswap-effect ContentSwap104" hover-fx="ContentSwap104" id="ContentSwap104" is-hovered="1"> 
               <div className="ContentSwap104_content initial-image">
-                <img className="portfolio-cards-projectimg" data-size="1200x800" src={props.img} alt=""></img>
+              <a href={'/eventList/category/' + props.name}>
+                <img className="portfolio-cards-projectimg" data-size="1200x800" src={props.img}></img>
+              </a>
               </div> 
               <div className="overlay content-style">
               </div> 

@@ -2,11 +2,14 @@ import React from 'react';
 import moment from 'moment';
 import { API } from 'aws-amplify';
 import SelectCurrency from 'react-select-currency';
+// import DatePicker from "react-datepicker";
 
 import './../css/profile.css';
 import { NotificationManager } from 'react-notifications';
-// import { TimezonePicker } from "baseui/timezonepicker";
-import TimezonePicker from 'react-bootstrap-timezone-picker';
+import "react-datepicker/dist/react-datepicker.css";
+
+var timezones = require('../const/timezone.json');
+var currencies = require('../const/currency.json');
 
 export default class Home extends React.Component {
   constructor(props) {
@@ -15,6 +18,8 @@ export default class Home extends React.Component {
       event: {},
       user: {},
       categories:{},
+      timezones:timezones,
+      currencies:currencies,
       submitText: "Create Event"
     }
   }
@@ -32,7 +37,8 @@ export default class Home extends React.Component {
       event.userName = user.name;
       event.currency = "INR";
       event.language = "English";
-      event.timeZone = "Asia/Colombo";
+      event.eventTimeZone = "Asia/Kolkata";
+      event.timezoneOffset = "+05:30";
     } else {
       event = JSON.parse(localEvent);
       this.setState({submitText: "Update Event"});
@@ -69,8 +75,11 @@ export default class Home extends React.Component {
   }
 
   handleTimeZoneChange = e => {
+    const value = e.target.value;
     var event = this.state.event;
-    event.timeZone = e;
+    let item = this.state.timezones.find(timezone => timezone.value === value);
+    event.eventTimeZone = item.value;
+    event.timezoneOffset = item.offset;
     this.setState({
       event: event
     });
@@ -81,21 +90,29 @@ export default class Home extends React.Component {
     const value = e.target.value;
     var event = this.state.event;
     //alert(key + " " + value)
+
     event[key] = value;
     this.setState({
       event: event
     });
-    //alert(JSON.stringify(event))
   }
-
 
   handleSubmit= e => {
     e.preventDefault();
     let event = this.state.event;
     if(event.eventId == null) {
+      // New Event
       event.eventId = new Date().valueOf() + "";
-      //alert("Created Event ID" + event.eventId);
+      event.eventstatus = "Created";
+      event.bookingAllowed = true;
+    } else {
+      //Update Event
+      event.eventstatus = "Updated";
+      event.cancelAllowed = true;
     }
+
+    event.editAllowed = true;
+    event.displayDate = moment(event.eventDate, 'YYYY/MM/DD').format("DD MMM YYYY");
 
     let input = {body : event}
     API.put('event', '/event', input)
@@ -104,10 +121,11 @@ export default class Home extends React.Component {
         if(response.error) {
           NotificationManager.error(response.error, 'Error!');
         } else {
-          if(this.state.submitText === "Create Event")
+          if(this.state.submitText === "Create Event") {
             NotificationManager.success('Event Created Successfully', 'Successful!', 2000);
-          else
+          } else {
             NotificationManager.success('Event Updated Successfully', 'Successful!', 2000);
+          }
           setTimeout(() => {  window.location.href = '/profile';}, 1000);
         }
       })
@@ -115,7 +133,7 @@ export default class Home extends React.Component {
         NotificationManager.error(error, 'Error!');
       });
   }
-      
+    
   render(){
 
     let categoryList = this.state.categories && this.state.categories.length > 0
@@ -124,6 +142,20 @@ export default class Home extends React.Component {
           <option value={item.Name}>{item.Title}</option>
         )
       }, this);
+
+    let timeZoneList = this.state.timezones && this.state.timezones.length > 0
+      && this.state.timezones.map((item, i) => {
+        return (
+          <option value={item.value}>{item.label}</option>
+        )
+    }, this);
+
+    let currencyList = this.state.currencies && this.state.currencies.length > 0
+    && this.state.currencies.map((item, i) => {
+      return (
+        <option value={item.value}>{item.label}</option>
+      )
+  }, this);
 
     return (
       <>
@@ -134,7 +166,7 @@ export default class Home extends React.Component {
               <div>
                 <div className="card">
                   <form onSubmit={this.handleSubmit}>
-                    <h3>Create Event</h3>
+                    <h3>{this.state.submitText}</h3>
                     <label className="custom-file-upload fas">
                       <div>
                         <img className="profileblock" src={this.state.event.image} alt=""/>
@@ -162,18 +194,23 @@ export default class Home extends React.Component {
                     </div>
                     <div className="field">
                       <label htmlFor="date">Event Date and Time</label>     
-                      <div >                  
+                      <div >     
+                        {/* <DatePicker selected={this.state.event.eventDate} onChange={this.handleChange} /> */}
+
                         <input id="eventDate" style={{width:"250px"}} type="date" onChange={this.handleChange} maxLength="50" 
-                          value={this.state.event.eventDate} min={moment().format("YYYY-MM-DD")}
+                          value={this.state.event.eventDate} min={moment().add(1,'days').format("YYYY-MM-DD")}
                           placeholder="Enter Event Date" required/>
                         <input id="startTime" style={{width:"150px"}} type="time" onChange={this.handleChange} maxLength="50" 
                           value={this.state.event.startTime} placeholder="Enter Event Start Time" required/>
                       </div>
                     </div>
                     <div className="field">
-                      <label htmlFor="timeZone">Time Zone</label>     
-                      <TimezonePicker value={this.state.event.timeZone} onChange={this.handleTimeZoneChange}/>
-                      {/* <TimezonePicker value={this.state.event.timeZone} onChange={({ id }) => this.handleTimeZoneChange(id)}/> */}
+                      <label htmlFor="eventTimeZone">Time Zone</label>     
+                      <select id="eventTimeZone" value={this.state.event.eventTimeZone} 
+                        onChange={this.handleTimeZoneChange}
+                        placeholder="Select the Timezone for the Event" required>
+                        {timeZoneList}
+                      </select>
                     </div>
                     <div className="field">
                       <label htmlFor="eventDuration">Event Duration in Minutes</label>
@@ -189,7 +226,11 @@ export default class Home extends React.Component {
                           value={this.state.event.price} placeholder="Enter Price per ticket" required/>
                       </div>
                       <div className="sideBox">
-                        <SelectCurrency id="currency" value={'INR'} onChange={this.handleChange} required/>
+                        <select id="currency" value={this.state.event.currency}
+                        onChange={this.handleChange}
+                        placeholder="Select the currency for payment" required>
+                        {currencyList}
+                      </select>
                       </div>
                     </div>
                     <div className="field">
@@ -207,7 +248,8 @@ export default class Home extends React.Component {
                       <input id="capacity" type="number" onChange={this.handleChange} maxLength="50" 
                         value={this.state.event.capacity} placeholder="Enter Maximum Capacity" required/>
                     </div>
-                    <button type="submit" className="save saveButton" >{this.state.submitText}</button>
+                    <button type="submit" className="save saveButton"
+                    >{this.state.submitText}</button>
                   </form>
                 </div>
               </div>

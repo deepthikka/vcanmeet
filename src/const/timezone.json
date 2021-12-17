@@ -1,0 +1,37 @@
+[
+    {  
+        "value": "Australia/Sydney",
+        "label": "(GMT+11:00) Canberra, Melbourne, Sydney",
+        "abbrev": "AEDT",
+        "offset": "+11:30",
+        "altName": "Australian Eastern Daylight Time"
+    },
+    {
+        "value": "Asia/Kolkata",
+        "label": "(GMT+5:30) Chennai, Kolkata, Mumbai, New Delhi",
+        "abbrev": "IST",
+        "offset": "+05:30",
+        "altName": "Indian Standard Time"
+    },
+    {  
+        "value": "America/Detroit",
+        "label": "(GMT-5:00) Eastern Time",
+        "abbrev": "EST",
+        "offset": "-05:00",
+        "altName": "Eastern Standard Time"
+    },
+    {  
+      "value": "America/Belize",
+      "label": "(GMT-6:00) Central America",
+      "abbrev": "CST",
+      "offset": "-06:00",
+      "altName": "Central Standard Time"
+    },
+    {  
+        "value": "America/Los_Angeles",
+        "label": "(GMT-8:00) Pacific Time",
+        "abbrev": "PST",
+        "offset": "-08:00",
+        "altName": "Pacific Standard Time"
+    }
+]

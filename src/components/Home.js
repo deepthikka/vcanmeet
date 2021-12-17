@@ -11,7 +11,7 @@ export default class Home extends React.Component {
   }
 
   async componentDidMount() {
-    localStorage.setItem('event', "");
+    //localStorage.setItem('event', "");
 
     API.get('category','/category/limit')
     .then(data => {
@@ -43,26 +43,26 @@ export default class Home extends React.Component {
   render(){
 
     const Event = props => (
-      <div className="blog-postcol cp4cols">
+      <div id="post-117" className="blog-postcol cp4cols">
         <div className="post-content">
-          <a onClick={() => this.eventClick(props)}>
-            <img className="eventImg" src={props.img} />
+          <a onClick={() => this.eventClick(props.data)}>
+            <img className="eventImg" src={props.data.image} />
           </a>
           <div className="row_345">
             <h3 className="blog-title">
-              <a rel="bookmark" onClick={() => this.eventClick(props)}>{props.title}</a>
+              <a rel="bookmark" onClick={() => this.eventClick(props.data)}>{props.data.eventName}</a>
             </h3>
             <hr className="blog-separator"></hr>
             <div className="post-header">
                 <i className="font-icon-post fa fa-user"></i>
-                <a href={'/profile/' + props.userId} rel="author">{props.author}</a>    
+                <a href={'/profile/' + props.data.userId} rel="author">{props.data.userName}</a>  
                 <i className="font-icon-post fa fa-calendar"></i>
-                <span className="span12">{props.date}</span>
+                <span className="span12">{props.data.displayDate}</span>
             </div>
           </div>
         </div>
       </div>      
-    );
+      );
 
     const Category = props => (
       <div className="portfolio-cards-projectcol cp4cols cp6cols-tablet"> 
@@ -115,9 +115,7 @@ export default class Home extends React.Component {
         length = this.state.events.length;
       for(var i=0; i<length; i++) {
         eventElements.push (
-          <Event img={this.state.events[i].image} title={this.state.events[i].eventName} 
-          author={this.state.events[i].userName} date={this.state.events[i].eventDate}
-          id={this.state.events[i].eventId} userId={this.state.events[i].userId}/>
+          <Event data={this.state.events[i]}/>
         );
       }
     }

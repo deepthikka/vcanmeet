@@ -16,7 +16,7 @@
     "moment": "^2.29.1",
     "react": "^17.0.2",
     "react-bootstrap": "^1.6.3",
-    "react-bootstrap-timezone-picker": "^2.0.1",
+    "react-datepicker": "^4.5.0",
     "react-dom": "^17.0.2",
     "react-facebook-login": "^4.1.1",
     "react-notifications": "^1.7.2",

@@ -1,0 +1,14 @@
+[
+    {  
+        "value": "INR",
+        "label": "India (INR)"
+    },
+    {
+        "value": "AUD",
+        "label": "Australia (AUD)"
+    },
+    {
+        "value":"USD",
+        "label":"America (USD)"
+    }
+]

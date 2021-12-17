@@ -130,6 +130,7 @@ function App() {
     Auth.signOut()
       .then(() => {
         NotificationManager.success('Succesfully Logged out!', 'Successful!', 1000);
+        window.location.href = '/';
       })
       .catch(err => {
         NotificationManager.error('Error : ' + err, 'Error!');
@@ -238,7 +239,7 @@ function App() {
       <div className="gridContainer">
         <div className="row">
           <p className="footer-copyright">
-            &copy;&nbsp;&nbsp;2021&nbsp;VcanMeet v0.6&nbsp;Contact : info@vcanmeet.com</p>
+            &copy;&nbsp;&nbsp;2021&nbsp;VcanMeet v0.7&nbsp;Contact : info@vcanmeet.com</p>
         </div>
       </div>
     </div>

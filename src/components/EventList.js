@@ -37,6 +37,7 @@ export default class Home extends React.Component {
         return;
       }
     }
+
     let eventList = JSON.parse(data.body);
     if(eventList.length == 0) {
       NotificationManager.error('No Events matched this Search. Please try again', 'Error!', 2000);
@@ -58,13 +59,13 @@ export default class Home extends React.Component {
           <div class="wp-block-columns col1">
             <div class="wp-block-column">
               <p></p>
-              <p>{props.eventDate}</p>
-              <p>{props.startTime} {props.timeZone}</p>
-              <p>Duration : {props.eventDuration} min</p>
+              <p><strong>Date     : </strong>{props.data.displayDate}</p>
+              <p><strong>Time     : </strong>{props.data.startTime} {props.data.eventTimeZone}</p>
+              <p><strong>Duration : </strong>{props.data.eventDuration} min</p>
               <div class="wp-block-buttons">
                 <div class="wp-block-button is-style-fill">
                   <a class="wp-block-button__link has-black-color has-vivid-green-cyan-background-color has-text-color has-background"
-                    onClick={() => this.eventClick(props)} >View
+                    onClick={() => this.eventClick(props.data)} >View
                   </a>
                 </div>
               </div>
@@ -72,8 +73,9 @@ export default class Home extends React.Component {
           </div>
           <div class="wp-block-columns col2">
             <div class="wp-block-column">
-              <h4><strong>{props.eventName}</strong></h4>
-              <p>{props.description} </p>
+              <h4><strong>{props.data.eventName}</strong></h4>
+              <a href={'/profile/' + props.data.userId} rel="author">{props.data.userName}</a>  
+              <p>{props.data.description} </p>
             </div>
           </div>
           <div class="wp-block-columns col3">
@@ -82,7 +84,7 @@ export default class Home extends React.Component {
               <div class="wp-block-image is-style-rounded">
                 <figure class="aligncenter">
                   <img loading="lazy" width="600px" height="200px"
-                    src={props.image} alt="" />
+                    src={props.data.image} alt="" />
                 </figure>
               </div>  
             </div>
@@ -96,11 +98,7 @@ export default class Home extends React.Component {
     if(this.state.eventList) {
       for(var i=0; i<this.state.eventList.length; i++) {
         eventElements.push (
-          <Event image={this.state.eventList[i].image} eventName={this.state.eventList[i].eventName} 
-                eventDate={this.state.eventList[i].eventDate} startTime={this.state.eventList[i].startTime} 
-                eventDuration={this.state.eventList[i].eventDuration} timeZone={this.state.eventList[i].timeZone}
-                description={this.state.eventList[i].description} 
-                id={this.state.eventList[i].eventId} userId={this.state.eventList[i].userId}/>
+          <Event data={this.state.eventList[i]} />
         );
       }
     }

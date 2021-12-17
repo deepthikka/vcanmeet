@@ -23,7 +23,7 @@
         },
         "eventFunction": {
           "deploymentBucketName": "amplify-amplify9befba8829824-staging-201151-deployment",
-          "s3Key": "amplify-builds/eventFunction-71626d6c436338783548-build.zip"
+          "s3Key": "amplify-builds/eventFunction-6e5a42563131612f4461-build.zip"
         },
         "bookingFunction": {
           "deploymentBucketName": "amplify-amplify9befba8829824-staging-201151-deployment",

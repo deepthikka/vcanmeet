@@ -7,6 +7,7 @@ export default class Home extends React.Component {
     this.state = {
       user: {},
       events: [],
+      bookedEvents: [],
       videos: [],
       isFollower: true,
       isOwnProfile: false
@@ -18,14 +19,13 @@ export default class Home extends React.Component {
     var localUser = localStorage.getItem('user');
     var user = {};
 
-    if(localUser === null || localUser === "") {
-    } else {
+    if(localUser !== null && localUser !== "") {
       user = JSON.parse(localUser);
     }
 
     let profileUser = {};
 
-    if (this.props.match.params.userId && (user.userId === null || this.props.match.params.userId !== user.userId)) {
+    if (this.props.match.params.userId && (user.id === null || this.props.match.params.userId !== user.id)) {
       const data1 = await API.get('user','/user/'+ this.props.match.params.userId);
 
       if(data1.error) {
@@ -58,14 +58,35 @@ export default class Home extends React.Component {
       url = '/event/' + profileUser.id;
     }
 
-    const data = await API.get('event',url)
-    if(data.error) {
-      alert(data.error)
-      return;
-    }
-    let eventList = JSON.parse(data.body);
-    this.setState({events: eventList});
-    
+    API.get('event',url)
+    .then(data => {
+      if(data.error) {
+        alert(data.error)
+        return;
+      }
+
+      let eventList = JSON.parse(data.body);
+      this.setState({events: eventList});
+    })
+    .catch(error => {
+      alert(error)
+    })
+
+    // API.get('booking','/booking/'+ profileUser.id)
+    // .then(data => {
+    //   if(data.error) {
+    //     alert(data.error)
+    //     return;
+    //   }
+
+    //   let bookedEventList = JSON.parse(data.body);
+    //   alert(bookedEventList)
+    //   this.setState({bookedEvents: bookedEventList});
+    // })
+    // .catch(error => {
+    //   alert(error)
+    // })
+
     if(profileUser.youtubeid) {
       
       const currentChannelId = profileUser.youtubeid;
@@ -90,21 +111,19 @@ export default class Home extends React.Component {
     const Event = props => (
     <div id="post-117" className="blog-postcol cp4cols">
       <div className="post-content">
-        <a onClick={() => this.eventClick(props)}>
-          <img className="eventImg" src={props.img} />
+        <a onClick={() => this.eventClick(props.data)}>
+          <img className="eventImg" src={props.data.image} />
         </a>
         <div className="row_345">
           <h3 className="blog-title">
-            {/* <a href={'/event/' + props.id} rel="bookmark" >{props.title}</a> */}
-            <a rel="bookmark" onClick={() => this.eventClick(props)}>{props.title}</a>
+            <a rel="bookmark" onClick={() => this.eventClick(props.data)}>{props.data.eventName}</a>
           </h3>
           <hr className="blog-separator"></hr>
           <div className="post-header">
               <i className="font-icon-post fa fa-user"></i>
-              {/* Deepthi - On click author name redirect to Author profile */}
-              <a href="#" rel="author">{props.author}</a>    
+              <a href={'/profile/' + props.data.userId} rel="author">{props.data.userName}</a>    
               <i className="font-icon-post fa fa-calendar"></i>
-              <span className="span12">{props.date}</span>
+              <span className="span12">{props.data.displayDate}</span>
           </div>
         </div>
       </div>
@@ -119,9 +138,20 @@ export default class Home extends React.Component {
 
       for(var i=0; i<length; i++) {
         eventElements.push (
-          <Event img={this.state.events[i].image} title={this.state.events[i].eventName} 
-                author={this.state.events[i].userName} date={this.state.events[i].eventDate}
-                id={this.state.events[i].eventId} userId={this.state.events[i].userId}/>
+          <Event data={this.state.events[i]}/>
+        );
+      }
+    }
+
+    var bookedEventElements = [];
+    if(this.state.bookedEvents) {
+      let length = 3;
+      if(this.state.bookedEvents.length < 3)
+        length = this.state.bookedEvents.length;
+
+      for(var i=0; i<length; i++) {
+        bookedEventElements.push (
+          <Event data={this.state.bookedEvents[i]}/>
         );
       }
     }
@@ -174,7 +204,10 @@ export default class Home extends React.Component {
                 <div className="blog-postcol cp3cols">
                   <div>
                     <div className="row_345">
-                      <img style={{ width: "50%", height: "40%", borderRadius: "50%" }} src="/images/profile.png" /><br/>
+                      <a href="/updateProfile">
+                      <img style={{ width: "50%", height: "40%", borderRadius: "50%" }} src="/images/profile.png" />
+                      </a>
+                      <br/>
                       <a className="button blue small" href="/updateProfile">
                         <span>Edit Profile</span>
                       </a>
@@ -185,7 +218,10 @@ export default class Home extends React.Component {
                         data-text="Become an Influencer to Create Event">
                     <div>
                       <div className="row_345">
-                        <img style={{ width: "40%", height: "40%", borderRadius: "50%" }} src="/images/event.png" /><br/>
+                        <a href="/createEvent">
+                          <img style={{ width: "40%", height: "40%", borderRadius: "50%" }} src="/images/event.png" />
+                        </a>
+                        <br/>
                         <a className="button green small" href="/createEvent">
                           <span >Create Event </span>
                         </a>

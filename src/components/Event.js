@@ -7,6 +7,18 @@ import moment from 'moment';
 import Modal from "./BookModal";
 import { composeDynamic } from 'styletron-react';
 
+/* State description
+ 1 - Cancelled
+ 2 - Join Event for Influencer and Booked Follower
+ 3 - Booking Closed for New Influencers
+ 4 - Edit Event - For Influencer
+ 5 - Re confirm Booking - For Follower, If Influencer Edited the Event Date time or cost
+ 6 - Cancel Booking - For Follower before cut-off time
+ 7 - Book Now - To allow New Booking
+ 8 - Event Will start soon - For Influencer or Follower after cut off time
+ 9 - Completed
+ */
+
 export default class Home extends React.Component {
 
   constructor(props) {
@@ -14,10 +26,11 @@ export default class Home extends React.Component {
     this.state = {
       user: {},
       event: {},
+      eventState : 0,
+      eventTag : "",
       owner: true,
       userLoggedIn: "",
       hasBooked: false,
-      joinEvent: false,
       bookingModal: false,
       code: "",
       modalInputName: "",
@@ -29,8 +42,7 @@ export default class Home extends React.Component {
     var localUser = localStorage.getItem('user');
     var user = {};
 
-    if(localUser === null || localUser === "") {
-    } else {
+    if(localUser !== null && localUser !== "") {
       user = JSON.parse(localUser);
       this.setState({userLoggedIn: user.id});
     }
@@ -42,8 +54,9 @@ export default class Home extends React.Component {
       window.location.href = '/home';
       return;
     }
-
+    
     const even = JSON.parse(localEvent);
+
 
     if(user.id === null || even.userId !== user.id) {
       this.setState({owner: false});
@@ -70,49 +83,81 @@ export default class Home extends React.Component {
       })
     }
 
-    if(user.id !== null) {
-      API.get('booking','/booking/'+ even.id + '/' + user.id)
+    const data = await API.get('event','/event/view/' + even.userId + '/' + even.eventId)
+    if(data.error) {
+      alert(data.error)
+      return;
+    }
+    let outputEvent = JSON.parse(data.body);
+    if(outputEvent && outputEvent.eventId) {
+      this.setState({event: outputEvent});
+      this.state.price = this.state.event.price;
+      localStorage.setItem("event", data.body);
+
+    if(user.id !== null && even.userId !== user.id) {
+      await API.get('booking','/booking/'+ even.eventId + '/' + user.id)
       .then(data2 => {
         if(data2.error) {
           alert(data2.error)
         }
         if(data2.body) {
-          let eventList = JSON.parse(data2.body);
-          if (eventList && eventList.length > 0)
             this.setState({hasBooked: true});
-        }     
+        }  
       })
       .catch(error => {
         alert(error)
       })
     }
 
-    const data = await API.get('event','/event/view/' + even.userId + '/' + even.id)
-    if(data.error) {
-      alert(data.error)
-      return;
-    }
-    let eventList = JSON.parse(data.body);
-    if(eventList && eventList.length > 0) {
-      this.setState({event: eventList[0]});
-      this.state.price = this.state.event.price;
-      localStorage.setItem("event", JSON.stringify(eventList[0]));
-      // alert(JSON.stringify(this.state.event));
+      if(even.eventstatus && even.eventstatus === "Cancelled") {
+        this.setState({eventState: 1});
+        this.setState({eventTag: "Event Cancelled"});
+        return;
+      }
+  
+      if(even.eventstatus && even.eventstatus === "Completed") {
+        this.setState({eventState: 9});
+        this.setState({eventTag: "Event Completed"});
+        return;
+      }
 
-      // alert(new Date().toLocaleString())
-      // alert(new Date().toString())
+      if(outputEvent.joinTime && outputEvent.joinTime === true) { 
+        if (this.state.owner || this.state.hasBooked) {
+          this.setState({eventState: 2});
+          this.setState({eventTag: "Join Event"});
+        } else{
+          this.setState({eventState: 3});
+          this.setState({eventTag: "Booking Closed"});          
+        }
+      } else if (this.state.owner) {
+        if (outputEvent.editAllowed) {
+          this.setState({eventState: 4});
+          this.setState({eventTag: "Edit Event"});
+        } else {
+          this.setState({eventState: 8});
+          this.setState({eventTag: "Event Will Start Soon"});
+        }
+      } else if (this.state.hasBooked) {  
+        if(outputEvent.cancelAllowed) {
+          this.setState({eventState: 5});
+          this.setState({eventTag: "Re-Confirm Booking"});
+        } else if (outputEvent.bookingAllowed) {
+          this.setState({eventState: 6});
+          this.setState({eventTag: "Cancel Booking"});
+        } else {
+          this.setState({eventState: 8});
+          this.setState({eventTag: "Event Will Start Soon"});         
+        }
+      } else {
+        if (outputEvent.bookingAllowed) {
+          this.setState({eventState: 7});
+          this.setState({eventTag: "Book Now"});    
+        } else {
+          this.setState({eventState: 3});
+          this.setState({eventTag: "Booking Closed"});              
+        }
+      }
 
-      var momentObj = moment(this.state.event.eventDate + this.state.event.startTime, 'YYYY-MM-DDLT');
-
-      // conversion
-      //var startTime = momentObj.format('YYYY-MM-DDTHH:mm');
-      var startTime = momentObj.subtract(5, 'minutes').format('YYYY-MM-DDTHH:mm');
-      var endTime = momentObj.add(this.state.event.eventDuration + 5, 'minutes').format('YYYY-MM-DDTHH:mm');
-      var currentTime = moment().utcOffset('+05:30').format('YYYY-MM-DDTHH:mm');
-
-      var jointime = moment(currentTime).isBetween(startTime,endTime);
-      if(jointime && (this.state.owner || this.state.hasBooked))
-        this.setState({joinEvent: true});
 
     } else {
       NotificationManager.error('Event does not Exist', 'Error!', 2000);
@@ -129,6 +174,91 @@ export default class Home extends React.Component {
       [name]: value,
       price: '0'
     });
+  }
+
+  handleBookingReConfirm() {
+    //Deepthi - To add logic for re-confirmation
+    alert(" Logic to be added for Re-Confirmation")
+  }
+
+  handleBookingCancel() {
+
+    API.del('booking','/booking/'+ this.state.event.eventId + '/' + this.state.userLoggedIn)
+      .then(response => {
+
+        if(response.error) {
+          NotificationManager.error(response.error, 'Error!');
+        } else {
+          NotificationManager.success('Booking Cancelled Successfully', 'Successful!', 2000);
+          setTimeout(() => {  window.location.href = '/profile';}, 1000);
+        }
+      })
+      .catch(error => {
+        NotificationManager.error(error, 'Error!');
+      });
+  }
+
+  handleBooking(e) {
+    //alert(this.state.eventTag + " " + this.state.eventState)
+    switch(this.state.eventState) {
+      case 4: //Edit Event
+        window.location.href = '/createEvent';
+        break;
+      case 5: //Re-confirm Booking
+      const reconfirmBox = window.confirm(
+        "Event has been Re-Scheduled. Please click Ok to Re-Confirm or Cancel to Cancel Event Booking"
+      )
+      if (reconfirmBox === true) {
+        this.handleBookingReConfirm()
+      } else {
+        this.handleBookingCancel()
+      }
+      break;      
+      case 6: //Cancel Booking
+        const confirmBox = window.confirm(
+          "Booking cancellation will be with penality. Do you really want to cancel this Booking?"
+        )
+        if (confirmBox === true) {
+          this.handleBookingCancel()
+        }
+        break;
+      case 7: //Book Now
+        this.modalOpen(e);
+        break;
+      default:
+        break;
+    }
+  }
+
+  handleCancelEvent(e) {
+    const confirmBox = window.confirm(
+      "Event cancellation will be with penality. Do you really want to cancel this Event?"
+    )
+    if (confirmBox === true) {
+      let event = this.state.event;
+      event.eventstatus = "Cancelled";
+      event.editAllowed = false;
+      event.cancelAllowed = false;
+      event.bookingAllowed = false;
+  
+      let input = {body : event}
+      API.put('event', '/event', input)
+        .then(response => {
+  
+          if(response.error) {
+            NotificationManager.error(response.error, 'Error!');
+          } else {
+            NotificationManager.success('Event Cancelled Successfully', 'Successful!', 2000);
+            if(event.bookedCount) {
+              //Deepthi - Initiate Refund for all booked Influencers
+            }
+            setTimeout(() => {  window.location.href = '/profile';}, 1000);
+          }
+        })
+        .catch(error => {
+          NotificationManager.error(error, 'Error!');
+        });
+    }
   }
 
   handleSubmit(e) {
@@ -154,6 +284,7 @@ export default class Home extends React.Component {
           NotificationManager.success('Booked Event Successfully', 'Successful!', 2000);
           this.setState({hasBooked: true})
           setTimeout(() => {this.modalClose();}, 1000);
+          window.location.href = '/profile';
         }
       })
       .catch(error => {
@@ -206,59 +337,48 @@ export default class Home extends React.Component {
                   <div class="wp-block-cover__inner-container">
                     <div class="wp-block-buttons">
                       <div class="wp-block-button has-custom-width wp-block-button__width-100 is-style-fill">
-                        { this.state.joinEvent?
+                      { this.state.eventState == 2?
                           <a href="/meeting"  class="wp-block-button__link has-vivid-green-cyan-background-color has-background"
                           target="_blank">
-                              <span class="has-inline-color has-white-color"><strong>Join Meeting</strong></span>
+                              <span class="has-inline-color has-white-color"><strong>{this.state.eventTag}</strong></span>
                           </a>
                           :
-                          <>
-                          { this.state.owner?
-                            <a href="/createEvent" class="wp-block-button__link has-vivid-green-cyan-background-color has-background">
-                              <span class="has-inline-color has-white-color"><strong>Edit Event</strong></span>
-                            </a>
-                            : 
-                            <>
-                            { this.state.hasBooked?
-                            <div>
-                              <a class="wp-block-button__link has-vivid-cyan-blue-background-color has-background">
-                                  <span class="has-inline-color has-white-color"><strong>Booking Done</strong></span>
-                              </a>
-                              </div>
-                              :
-                            <>
-                              <a href="#"  class="wp-block-button__link has-vivid-green-cyan-background-color has-background"
-                              onClick={e => this.modalOpen(e)}>
-                                  <span class="has-inline-color has-white-color" ><strong>Book Now</strong></span>
+                          <><a class="wp-block-button__link has-vivid-green-cyan-background-color has-background"
+                                onClick={e => this.handleBooking(e)}>
+                                <span class="has-inline-color has-white-color"><strong>{this.state.eventTag}</strong></span>
                               </a>
                               <Modal show={this.state.bookingModal} handleClose={e => this.modalClose(e)}>
-                                <div className="form-group">
-                                  <h2 className="title" >Event Booking Confirmation</h2>
-                                </div>
-                                <div className="form-group">
-                                  <h5>Event Name: {this.state.event.eventName}</h5>
-                                </div>   
-                                <div className="form-group">
-                                  <h5>Event Price: {this.state.event.price} {this.state.event.currency}</h5>
-                                </div>                              
-                                <div className="form-group">
-                                  <h5>Enter Promocode:</h5>
-                                  <input type="text" className="form-control" value={this.state.modalInputName}
-                                        name="modalInputName" onChange={e => this.handleChange(e)}/>
-                                </div>
-                                <div className="form-group">
-                                  <h5>Final Price: {this.state.price} {this.state.event.currency}</h5>
-                                </div>  
-                                <div className="form-group">
-                                  <button type="button" className="save saveButton" onClick={e => this.handleSubmit(e)}>Make Payment</button>
-                                </div>
-                              </Modal>
-                            </>
-                            }
-                            </>
-                          }
-                          </>
-                        }
+                                  <div className="form-group">
+                                    <h2 className="title">Event Booking Confirmation</h2>
+                                  </div>
+                                  <div className="form-group">
+                                    <h5>Event Name: {this.state.event.eventName}</h5>
+                                  </div>
+                                  <div className="form-group">
+                                    <h5>Event Price: {this.state.event.price} {this.state.event.currency}</h5>
+                                  </div>
+                                  <div className="form-group">
+                                    <h5>Enter Promocode:</h5>
+                                    <input type="text" className="form-control" value={this.state.modalInputName}
+                                      name="modalInputName" onChange={e => this.handleChange(e)} />
+                                  </div>
+                                  <div className="form-group">
+                                    <h5>Final Price: {this.state.price} {this.state.event.currency}</h5>
+                                  </div>
+                                  <div className="form-group">
+                                    <button type="button" className="save saveButton" onClick={e => this.handleSubmit(e)}>Make Payment</button>
+                                  </div>
+                                </Modal>
+                                </>                         
+                      }
+                      {this.state.eventState == 4 && this.state.owner?
+                        <a class="wp-block-button__link has-vivid-red-background-color has-background"
+                          onClick={e => this.handleCancelEvent(e)}>
+                          <span class="has-inline-color has-white-color"><strong>Cancel Event</strong></span>
+                        </a>
+                        : <></>                      
+
+                      }
                       </div>
                     </div>
                   </div>
@@ -278,7 +398,7 @@ export default class Home extends React.Component {
                         <div>
                           <img style={{width: 50, height: 50}} src="/images/calendar.png" />
                           <a className="button blue" style={{width: 300, height: 50, color: 'white', fontSize: 'large'}}>
-                              {this.state.event.eventDate}
+                              {this.state.event.displayDate}
                           </a>
                         </div>
                       </div>   
@@ -294,7 +414,7 @@ export default class Home extends React.Component {
                         <div>
                           <img style={{width: 50, height: 50}} src="/images/timezone.png" />
                           <a className="button yellow" style={{width: 300, height: 50, color: 'white', fontSize: 'large'}}>
-                              {this.state.event.timeZone}
+                              {this.state.event.eventTimeZone}
                           </a>
                         </div>
                       </div>  

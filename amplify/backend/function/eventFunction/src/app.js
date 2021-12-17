@@ -7,11 +7,10 @@ See the License for the specific language governing permissions and limitations 
 */
 
 
-
-
 var express = require('express')
 var bodyParser = require('body-parser')
 var awsServerlessExpressMiddleware = require('aws-serverless-express/middleware')
+var moment = require('moment')
 
 const AWS = require('aws-sdk');
 const { request } = require('express');
@@ -32,23 +31,22 @@ app.use(function(req, res, next) {
   next()
 });
 
-
-/**********************
- * Example get method *
- **********************/
-
+//Get Events for Home Page Display
 app.get('/event', function(req, res) {
   var todayDate = new Date().toISOString().slice(0, 10);
   let params = {
     TableName : tablename,
     limit : 10,
-    // ProjectionExpression:"eventName, image, userName, eventDate, eventId, userId, startTime, eventDuration, timeZone, description",
-    FilterExpression: "#eventDate > :eventDate",
+    ProjectionExpression:"eventName, image, userName, eventDate, displayDate, eventId, userId, startTime, eventDuration, eventTimeZone, description",
+    FilterExpression: "#eventDate >= :eventDate AND #eventstatus <> :cancelStatus AND #eventstatus <> :completeStatus",
     ExpressionAttributeNames:{
-      "#eventDate": "eventDate"
+      "#eventDate": "eventDate",
+      "#eventstatus": "eventstatus"
     },
     ExpressionAttributeValues: {
-        ":eventDate": todayDate
+        ":eventDate": todayDate,
+        ":cancelStatus": "Cancelled",
+        ":completeStatus": "Completed"
     }
   }
 
@@ -61,20 +59,23 @@ app.get('/event', function(req, res) {
   })
 });
 
+//Get events for particular Category
 app.get('/event/category/:category', function(req, res) {
   var todayDate = new Date().toISOString().slice(0, 10);
   let params = {
     TableName : tablename,
-    // limit : 10,
-    // ProjectionExpression:"eventName, image, userName, eventDate, eventId, userId, startTime, eventDuration, timeZone, description",
-    FilterExpression: "#eventDate > :eventDate AND #category = :category", 
+    ProjectionExpression:"eventName, image, userName, eventDate, displayDate, eventId, userId, startTime, eventDuration, eventTimeZone, description",
+    FilterExpression: "#eventDate >= :eventDate AND #category = :category AND #eventstatus <> :cancelStatus AND #eventstatus <> :completeStatus ",
     ExpressionAttributeNames:{
       "#eventDate": "eventDate",
       "#category": "category",
+      "#eventstatus": "eventstatus"
     },
     ExpressionAttributeValues: {
         ":eventDate": todayDate,
-        ":category": req.params.category
+        ":category": req.params.category,
+        ":cancelStatus": "Cancelled",
+        ":completeStatus": "Completed"
     }
   }
 
@@ -87,6 +88,7 @@ app.get('/event/category/:category', function(req, res) {
   })
 });
 
+//Get events created by particular user
 app.get('/event/:userId', function(req, res) {
 
   let result = [];
@@ -94,7 +96,7 @@ app.get('/event/:userId', function(req, res) {
 
   let params = {
     TableName : tablename,
-    // ProjectionExpression:"eventName, image, userName, eventDate, eventId, userId",
+    ProjectionExpression:"eventName, image, userName, eventDate, displayDate, eventId, userId, startTime, eventDuration, eventTimeZone, description, eventstatus",
     KeyConditionExpression: "#userId = :userId AND #eventDate >= :eventDate",
     ExpressionAttributeNames:{
         "#userId": "userId",
@@ -115,6 +117,7 @@ app.get('/event/:userId', function(req, res) {
   })
 });
 
+//Get particular event with event id and user id
 app.get('/event/view/:userId/:eventId', function(req, res) {
 
   let result = [];
@@ -137,7 +140,89 @@ app.get('/event/view/:userId/:eventId', function(req, res) {
     if (error) {
       res.json({statusCode: 500, error: error.message});
     } else {
-      res.json({statusCode: 200, url: req.url, body: JSON.stringify(result.Items)});
+      if(result.Items && result.Items.length > 0) {
+        let eventOutput = result.Items[0];
+
+        if(eventOutput.eventstatus === "Cancelled" || eventOutput.eventstatus === "Completed") {
+          res.json({statusCode: 200, url: req.url, body: JSON.stringify(eventOutput)});
+        } else {
+                 
+          var currentTime = moment().utcOffset(eventOutput.timezoneOffset).format('YYYY-MM-DDTHH:mm');
+          
+          var toUpdate = false;
+          
+          // Check if Influencer can Edit/Cancel Event - Before 24 hours
+          if(eventOutput.editAllowed === undefined || eventOutput.editAllowed === true) {
+            var momentObj = moment(eventOutput.eventDate + eventOutput.startTime, 'YYYY-MM-DDLTHH:mm');
+            var endTime = momentObj.format('YYYY-MM-DDTHH:mm');
+            var startTime = momentObj.subtract(24,'hours').format('YYYY-MM-DDTHH:mm');
+            if(moment(currentTime).isBetween(startTime,endTime)) {
+              eventOutput.editAllowed = false;
+              toUpdate = true;
+            }
+          }
+
+          if (eventOutput.editAllowed === false) {
+          
+            // Check if Follower can Cancel Event - Before 12 hours
+            if(eventOutput.eventstatus === "Updated" && eventOutput.cancelAllowed === true) {
+              var momentObj = moment(eventOutput.eventDate + eventOutput.startTime, 'YYYY-MM-DDLTHH:mm');
+              var endTime = momentObj.format('YYYY-MM-DDTHH:mm');
+              var startTime = momentObj.subtract(12,'hours').format('YYYY-MM-DDTHH:mm');
+              if(moment(currentTime).isBetween(startTime,endTime)) {
+                eventOutput.cancelAllowed = false;
+                toUpdate = true;
+              }
+            }
+
+            // Check if Follower can Create Event - Before 12 hours
+            if(eventOutput.bookingAllowed === true) {
+              var momentObj = moment(eventOutput.eventDate + eventOutput.startTime, 'YYYY-MM-DDLTHH:mm');
+              var endTime = momentObj.format('YYYY-MM-DDTHH:mm');
+              var startTime = momentObj.subtract(12,'hours').format('YYYY-MM-DDTHH:mm');
+              if(moment(currentTime).isBetween(startTime,endTime)) {
+                eventOutput.bookingAllowed = false;
+                toUpdate = true;
+              }
+            }
+          
+            if (eventOutput.bookingAllowed === false) {
+              // Check if its Join time
+              var momentObj = moment(eventOutput.eventDate + eventOutput.startTime, 'YYYY-MM-DDLTHH:mm');
+              var startTime = momentObj.subtract(5, 'minutes').format('YYYY-MM-DDTHH:mm');
+              var duration = Number(eventOutput.eventDuration) + Number(10);
+              var endTime = momentObj.add(duration, 'minutes').format('YYYY-MM-DDTHH:mm');
+              if(eventOutput.joinTime === undefined || eventOutput.joinTime === false) {
+                if(moment(currentTime).isBetween(startTime,endTime)) {
+                  eventOutput.joinTime = true;
+                  toUpdate = true;
+                }
+                // eventOutput.sstartTime = startTime;
+                // eventOutput.endTime = endTime;
+                // eventOutput.currentTime = currentTime;
+              }
+              if (moment(currentTime).diff(endTime, 'seconds') >= 0) {
+                eventOutput.joinTime = false;
+                eventOutput.eventstatus = "Completed";
+                toUpdate = true;
+              }
+            }
+          }
+    
+          if(toUpdate) {
+            //Update Event to DB
+            var params1 = {
+              TableName: tablename,
+              Item: eventOutput
+            }
+            dynamodb.put(params1, (error, result) => {});
+          }
+
+          res.json({statusCode: 200, url: req.url, body: JSON.stringify(eventOutput)});
+        }
+      } else {
+        res.json({statusCode: 200, url: req.url, body: JSON.stringify({})});
+      }
     }
   })
 });
@@ -158,19 +243,23 @@ app.put('/event', function(req, res) {
   })
 });
 
-/****************************
-* Example delete method *
-****************************/
-
 app.delete('/event', function(req, res) {
-  // Add your code here
-  res.json({success: 'delete call succeed!', url: req.url});
+  var params = {
+    TableName: tablename,
+    "Key" : {
+      "eventId": req.body
+    }
+  }
+
+  dynamodb.delete(params, (error, result)=> {
+    if (error) {
+      res.json({statusCode: 500, error: error.message});
+    } else {
+      res.json({statusCode: 200, url: req.url, body: "Success"});
+    }
+  })
 });
 
-app.delete('/event/*', function(req, res) {
-  // Add your code here
-  res.json({success: 'delete call succeed!', url: req.url});
-});
 
 app.listen(3000, function() {
     console.log("App started")

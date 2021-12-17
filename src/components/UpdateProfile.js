@@ -17,7 +17,7 @@ export default class Home extends React.Component {
     let user = JSON.parse(localStorage.getItem('user'));
     let profile = localStorage.getItem('profile');
     let updatedUser = {};
-    if(profile == null || profile == "") {
+    if(profile === null || profile === "") {
       updatedUser = user;
       updatedUser.userType = "Follower";
     }
